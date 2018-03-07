@@ -1,7 +1,6 @@
 function doubanSpan() {
 	var e = document.createElement('SPAN');
 	e.className = 'doubanRating';
-	e.style = 'margin:3px;display:inline-block;'
 	return e;
 }
 
@@ -38,7 +37,7 @@ function injectRatings(node, doubanResult) {
 function removePreviousNodes(node){
 	var n = node.getElementsByClassName('doubanRating');
 	if (n) {
-		for (let i = 0; i < n.length; i++){
+		for (let i = 0, l = n.length; i < l; i++){
 			node.removeChild(n[0]);
 		}
 	}
