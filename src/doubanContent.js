@@ -5,12 +5,12 @@ function getRating() {
     var movieYear = searchText.substr(index, searchText.length-index).trim(); // with parenthesis.
     var searchResults = document.getElementsByClassName('item-root');
 
-    console.log('Search Text:', searchText)
-    console.log('Title:', movieTitle)
-    console.log('Year:', movieYear);
+    console.log('(doubanContent.js) Search Text:', searchText)
+    console.log('(doubanContent.js) Title:', movieTitle)
+    console.log('(doubanContent.js) Year:', movieYear);
 
     if (searchResults.length < 1) {
-        console.log('Cannot find a match for "' + searchText + '"');
+        console.log('(doubanContent.js) Cannot find a match for "' + searchText + '"');
         chrome.runtime.sendMessage({action: "searchOnDouban", content: null});
         return;
     }
@@ -27,15 +27,31 @@ function getRating() {
         // first check for year, this can't be wrong
         if (title.indexOf(movieYear)){
             // next check for movie name
-            if (title.toLowerCase.match)
-                return titles[i].getElementsByTagName('a')[0].href
+            // generate regex
+            let m = movieTitle.replace(/\s/g,'\\W+');
+            let matchedString = new RegExp(m, 'gi').exec(title);
+            if (!matchedString) {
+                continue;
+            }
+            result.rating = searchResults[i].getElementsByClassName('rating_nums')[0].textContent;
+            result.isWatched = searchResults[i].getElementsByClassName('status-text').length == 0? false : true;
+            result.url = searchResults[i].getElementsByTagName('a')[0].href;
+            result.isQuerySuccessful = true;
+            break;
         }
     }
-
-    var rating = document.getElementsByClassName('item-root')[0].getElementsByClassName('rating_nums')[0].textContent;
-    var isWatched = document.getElementsByClassName('item-root')[0].getElementsByClassName('status-text').length == 0? false : true;
-    console.log('Rating:', rating);
-    console.log('Watched?:', isWatched);
+    
+    console.log('(doubanContent.js) Rating/watched/url:', result.rating, result.isWatched, result.url);
+    // send rating back to background.js
+    chrome.runtime.sendMessage({action: 'doubanRated', content: result});
 }
 
+var result = {
+    rating: 0,
+    isWatched: false,
+    url: '',
+    isQuerySuccessful: false
+}
+
+console.log('(doubanContent.js) Analysing douban.')
 getRating();

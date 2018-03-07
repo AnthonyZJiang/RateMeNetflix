@@ -14,16 +14,21 @@
   "content_scripts": [
     {
       "matches": ["https://movie.douban.com/subject_search?*"],
-      "js": ["doubanContent.js"]
+      "js": ["doubanContent.js"],
+      "all_frames": true
     },
     {
       "matches": ["https://www.netflix.com/browse*"],
-      "js": ["netflixContent.js"],
+      "js": ["netflixContent.js", "inject.js"],
       "css": ["netflixContent.css"]
     }
   ],
   
   "permissions": ["activeTab",
     "https://movie.douban.com/subject_search?*", 
-    "https://www.netflix.com/browse*"]
+    "https://www.netflix.com/browse*"],
+
+    "web_accessible_resources": [
+      "img/doubanLogo16x16.png"
+    ]
 }

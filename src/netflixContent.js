@@ -1,5 +1,17 @@
-var prevDOM = null;
-var prevMovieTitle = 'prevMovie';
+var _prevDOM = null;
+var _prevMovieTitle = 'prevMovie';
+var _bobOverlay = null;
+
+const _waitRating = {
+    rating: 'loading...',
+    url: '',
+    isWatched: false
+}
+const _failRating = {
+    rating: 'no results',
+    url: '',
+    isWatched: false
+}
 
 // Mouse listener for any move event on the current document.
 document.addEventListener('mousemove', function (e) {
@@ -7,8 +19,8 @@ document.addEventListener('mousemove', function (e) {
     if (srcElement == null)
         return;
 
-    if (prevDOM != srcElement){
-        prevDOM = srcElement;
+    if (_prevDOM != srcElement){
+        _prevDOM = srcElement;
         return;
     }
 
@@ -26,7 +38,8 @@ document.addEventListener('mousemove', function (e) {
     if (srcElement == null || srcElement.className!="bob-overlay")
         return;
 
-    // now we are in the right place, get movie title and publication year
+    // now we are in the right place
+    // get movie title and publication year
     var movieTitle = srcElement.getElementsByClassName('bob-title');
     var movieYear = srcElement.getElementsByClassName('year');
     
@@ -44,7 +57,7 @@ document.addEventListener('mousemove', function (e) {
     movieYear = movieYear[0].textContent.trim();
 
     // if the current movie is the same as the previous movie, we return.
-    if (movieTitle == prevMovieTitle)
+    if (movieTitle == _prevMovieTitle)
         return;
     // return if title is empty
     if (movieTitle == '')
@@ -53,7 +66,7 @@ document.addEventListener('mousemove', function (e) {
     if (movieYear != '')
         movieYear = '(' + movieYear + ')';
 
-    prevMovieTitle = movieTitle;
+    _prevMovieTitle = movieTitle;
     console.log('Movie found:', movieTitle, movieYear);
     // replace special characters with space.
     movieTitle = movieTitle.replace(/[^\w\s]/g, ' ').trim();
@@ -61,6 +74,23 @@ document.addEventListener('mousemove', function (e) {
 
     // now let's send the message and start searching!
     chrome.runtime.sendMessage({action: 'doubanSearch', title: movieTitle, year: movieYear});
-
+    
+    // insert texts to tell user that we are trying hard to get the results from Douban.
+    _bobOverlay = srcElement;
+    injectRatings(srcElement, _waitRating);
 
 }, false);
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        console.log('(netflixContent.js) Message received: ', request.action);
+        if (request.action == "doubanRated"){
+            console.log('(netflixContent.js) Query successful?', request.content.isQuerySuccessful);
+
+            if (request.content.isQuerySuccessful)
+                injectRatings(_bobOverlay, request.content);
+            else
+                injectRatings(_bobOverlay, _failRating);
+        }
+    }
+);
