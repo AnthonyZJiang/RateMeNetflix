@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "RateMe Netflix",
+  "version": "0.1",
+
+  "background": {
+    "scripts":["background.js"]
+  },
+
+  "browser_action": {
+    "default_title": "RateMe Netflix"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://movie.douban.com/subject_search?*"],
+      "js": ["doubanContent.js"]
+    },
+    {
+      "matches": ["https://www.netflix.com/browse*"],
+      "js": ["netflixContent.js"],
+      "css": ["netflixContent.css"]
+    }
+  ],
+  
+  "permissions": ["activeTab",
+    "https://movie.douban.com/subject_search?*", 
+    "https://www.netflix.com/browse*"]
+}
