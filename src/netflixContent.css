@@ -1,4 +1,18 @@
-.doubanRating {
-    margin : 3px;
-    display : inline-block;
+span.douban-logo {
+    margin-left: 1vw;
+    margin-top: 15px;
+    display: inline-block;
+}
+
+span.douban-info {
+    margin-left: 5px;
+    margin-top: 15px;
+    display: inline-block;
+    font-size: 0.9vw;
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+}
+
+div.douban-title, div.douban-meta {
+    font-size: 0.7vw;
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
 }

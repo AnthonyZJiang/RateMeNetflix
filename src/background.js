@@ -1,4 +1,7 @@
 var _netflixTabId;
+var _frame
+_frame = document.createElement('iframe');
+document.body.appendChild(_frame);
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
@@ -14,8 +17,8 @@ chrome.runtime.onMessage.addListener(
 );
 
 function injectIFrame(title, year){
-    var frame = document.createElement('iframe');
-    frame.src = 'https://movie.douban.com/subject_search?cat=1002&search_text=' + title + ' '+ year;
-    frame.sandbox = 'allow-scripts allow-same-origin';
-    document.body.appendChild(frame);
-  }
+    _frame.src = 'https://movie.douban.com/subject_search?cat=1002&search_text=' + title + ' '+ year;
+    _frame.sandbox = 'allow-scripts allow-same-origin';
+}
+
+//chrome.runtime.onAction

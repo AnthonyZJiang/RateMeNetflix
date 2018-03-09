@@ -18,7 +18,7 @@
       "all_frames": true
     },
     {
-      "matches": ["https://www.netflix.com/browse*"],
+      "matches": ["https://*.netflix.com/*"],
       "js": ["netflixContent.js", "inject.js"],
       "css": ["netflixContent.css"]
     }
@@ -26,7 +26,8 @@
   
   "permissions": ["activeTab",
     "https://movie.douban.com/subject_search?*", 
-    "https://www.netflix.com/browse*"],
+    "https://*.netflix.com/browse*",
+    "https://*.netflix.com/watch*"],
 
     "web_accessible_resources": [
       "img/doubanLogo16x16.png"
