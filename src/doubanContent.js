@@ -64,7 +64,7 @@ function getRating() {
                 result.queryStatus = QUERY_FAILED;
                 break;
             }
-            if ((result.rating = searchResults[i].getElementsByClassName('rating_nums').length) > 0) {
+            if (searchResults[i].getElementsByClassName('rating_nums').length) {
                 result.queryStatus = QUERY_FUZZY;
                 break;
             }
@@ -94,4 +94,8 @@ function getRating() {
 }
 
 console.log('(doubanContent.js) Analysing douban.')
-getRating();
+try {
+    getRating();
+} catch (ex) {
+    chrome.runtime.sendMessage({action:'caughtEx',message:'(doubanContent.js) Error occurred in parsing douban search result.', exMessage: ex.message, exStack: ex.stack});
+}

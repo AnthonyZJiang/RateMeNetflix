@@ -18,6 +18,9 @@ function getCurrentlyWatchingMovie(){
     } else if ((node = this.document.getElementsByClassName('pp-rating-title')).length){ 
         // at the end
         movieTitle = node[0].innerText;
+    } else {
+        var ex = new Error('cannot get movie title.');
+        chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixWatchContent.js) Error occurred in getting movie title.', exMessage: ex.message, exStack: ex.stack});
     }
     var isFound = false;
     // check if the movie has been queried before.
@@ -29,7 +32,7 @@ function getCurrentlyWatchingMovie(){
             }
         }
     }
-    catch (ex){ console.log(ex) }
+    catch (ex){ chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixWatchContent.js) Error occurred in finding movie in search result list.', exMessage: ex.message, exStack: ex.stack}); }
 
     if (isFound) {
         chrome.runtime.sendMessage({action: 'watchMovieInfo', content: _doubanMovieSearchResults[i]});

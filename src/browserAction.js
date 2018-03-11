@@ -22,10 +22,18 @@ function doubanXHR() {
             
             if (this.responseText.includes('class="nav-login"')) {
                 // if not logged in
-                aNode.innerText = '未登入豆瓣';
+                aNode.innerText = '未登录豆瓣';
             } else {
                 // if logged in
-                aNode.innerText = '已登入豆瓣';
+                try {
+                    let doc = new DOMParser().parseFromString(this.responseText, 'text/html');	
+                    aNode.innerText = doc.getElementsByClassName('nav-user-account')[0].getElementsByClassName('bn-more')[0].children[0].innerText;
+                    aNode.href = 'https://movie.douban.com/mine';
+                }
+                catch (ex) {
+                    chrome.runtime.sendMessage({action:'caughtEx',message:'(browserAction.js) Error occurred in querying douban login status.', exMessage: ex.message, exStack: ex.stack});
+                    aNode.innerText = '已登录豆瓣';
+                }
             }            
             document.getElementsByClassName('bd-nav-login-stat')[0].appendChild(aNode)
             // remove query text
@@ -93,6 +101,7 @@ function addContents(query) {
         e.value = "电影页面";
         e.type = "button";
         e.class = "movie-link";
+        e.onclick = function () {chrome.tabs.create({url:c.url})}
         node = document.getElementById('td-movie-link');
         node.appendChild(e);
     }

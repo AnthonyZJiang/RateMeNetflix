@@ -27,7 +27,8 @@ function getMovieInfo(node) {
     
     // get title
     if (movieTitle.length != 1){
-        console.log('Movie title not found.', node);
+        var ex = new Error('cannot get movie title.');
+        chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixBrowseContent.js) Error occurred in getting movie title.', exMessage: ex.message, exStack: ex.stack});
         return;
     }
     movieTitle = movieTitle[0].textContent;
@@ -38,7 +39,8 @@ function getMovieInfo(node) {
     // get year
     if (movieYear.length != 1){
         movieYear = '';
-        console.log('Movie year not found.', node);
+        var ex = new Error('cannot get movie year.');
+        chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixBrowseContent.js) Error occurred in getting movie year.', exMessage: ex.message, exStack: ex.stack});
     } else {
         movieYear = movieYear[0].textContent.trim();
     }
@@ -71,8 +73,10 @@ function getMovieInfo(node) {
 
 function browseParser(e) {
     var srcElement = e.srcElement; 
-    if (srcElement == null)
-        return;
+    if (srcElement == null) {
+        var ex = new Error('cannot get mouseover element.');
+        chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixBrowseContent.js) Error occurred in getting mouseover element.', exMessage: ex.message, exStack: ex.stack});
+    }
 
     if (_prevDOM != srcElement){
         _prevDOM = srcElement;

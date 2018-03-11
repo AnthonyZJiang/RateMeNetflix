@@ -1,3 +1,5 @@
 *.ai
 *.pem
 *.crx
+*.psd
+publish/

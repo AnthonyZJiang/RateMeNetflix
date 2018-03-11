@@ -4,6 +4,10 @@ span.douban-logo {
     display: inline-block;
 }
 
+.douban-logo-svg {
+    height: 0.75vw;
+}
+
 span.douban-info {
     margin-left: 5px;
     margin-top: 15px;

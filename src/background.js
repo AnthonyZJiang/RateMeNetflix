@@ -7,13 +7,12 @@ document.body.appendChild(_frame);
 // on message
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        console.log('(background.js) Message received: ', request.action)
-
         // douban search
         if (request.action == "doubanSearch") {
             _sendPopupMessage = request.sendPopupMessage;
             injectIFrame(request.title, request.year);
             _netflixTabId = sender.tab.id;
+            return;
         }
 
         // douban rated
@@ -24,6 +23,7 @@ chrome.runtime.onMessage.addListener(
             } else {
                 chrome.tabs.sendMessage(_netflixTabId, {action: 'doubanRated', content: request.content});
             }
+            return;
         }
 
         // douban login status
@@ -33,7 +33,17 @@ chrome.runtime.onMessage.addListener(
             } else {
                 chrome.browserAction.setIcon({path:"img/logo-douban-not-logged-in.png"});
             }
+            return;
         }
+
+        if (request.action === 'caughtEx') {
+            console.log('%c'+request.message, 'color: white; background: black');
+            console.log('%c'+request.exMessage, 'color: red');
+            console.log('%c'+request.exStack, 'color: red');
+            return;
+        }
+        
+        console.log('(background.js) Unhandled message received: ', request.action)
     }
 );
 

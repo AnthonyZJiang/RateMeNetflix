@@ -1,7 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "RateMe Netflix",
-  "version": "0.1",
+  "name": "Just play - 为你连接豆瓣电影和Netflix",
+  "short_name": "Just play",
+  "version": "1.0",
   "icons": { 
     "16": "img/logo@1x.png",
     "24": "img/logo@1.5x.png",
@@ -14,7 +15,7 @@
   },
 
   "browser_action": {
-    "default_title": "RateMe Netflix",
+    "default_title": "Just play",
     "default_popup": "browserAction.html"
   },
   
@@ -37,6 +38,7 @@
     "https://*.netflix.com/watch*"],
 
     "web_accessible_resources": [
-      "img/doubanLogo16x16.png"
+      "img/doubanLogo16x16.png",
+      "img/doubanLogo48x48.png"
     ]
 }
