@@ -104,6 +104,8 @@ function addContents(query) {
         e.onclick = function () {chrome.tabs.create({url:c.url})}
         node = document.getElementById('td-movie-link');
         node.appendChild(e);
+        // unhide table
+        document.getElementById("movie-content-table").style = "display: initial";
     }
 }
 

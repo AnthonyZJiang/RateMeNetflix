@@ -12,7 +12,7 @@
             background: white;
             font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
         }
-        div.bd-nav {
+        div.bd-nav, .footer {
             color: #d5d5d5;
             background-color: #545652;
             width: 100%;
@@ -71,6 +71,13 @@
         input:hover {
             background-color: #2a8c70;
         }
+        .footer-donation {
+            text-align: right;
+            margin-right: 1em;
+        }
+        #movie-content-table {
+            display: none;
+        }
         </style>
     </head>
 
@@ -90,37 +97,33 @@
             <!-- <div class="no-movie">
                 <p>没有播放任何电影</p>
             </div> -->
-            <table>
+            <table id="movie-content-table">
                 <tr >
-                    <td id="td-movie-poster" rowspan="4">
-                        <!-- <img class="movie-poster" src="https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2254455238.webp"> -->
-                    </td>
-                    <td id="td-movie-title">
-                        <!-- <div class="movie-title"> 女间谍 Spy (2015) </div> -->
-                    </td>
+                    <td id="td-movie-poster" rowspan="4"></td>
+                    <td id="td-movie-title"></td>
                 </tr>
                 <tr>
-                    <td id="td-movie-rating">   
-                        <!-- <span class="movie-rating">7.5</span> -->
-                        <!-- <span class="movie-rating-num">(92307人评价)</span> -->
-                    </td>
+                    <td id="td-movie-rating"> </td>
                 </tr>
                 <tr>
-                    <td id="td-movie-meta">
-                        <!-- <div class="meta abstract">美国 / 喜剧 / 动作 / 犯罪 / 凸务MADAM (港) / 麻辣贱谍(台)</div> -->
-                    </td>
+                    <td id="td-movie-meta"></td>
                 </tr>
                 <tr>
                     <td>
-                        <div id="td-movie-link">
-                            <!-- <input value="电影页面" type="button" class="movie-link"> -->
-                        </div>
+                        <div id="td-movie-link"></div>
                     </td>
                 </tr>
             </table>
         </div>
+        <div class="footer">
+            <div class="footer-donation">
+                <img src="img/mug-icon.png">
+                <a href="https://www.paypal.me/AnthonyzyJ/2">
+                    如果你喜欢这个扩展，能否给我买杯茶呢？ :)
+                </a>
+            </div>
+        </div>
         <script src="browserAction.js"></script>
-        <div></div>
         <!-- <iframe src="https://m.douban.com/movie/subject/6390825" sandbox="allow-scripts allow-same-origin" width="768px" height="1024px"></iframe> -->
     </body>
 </html>
