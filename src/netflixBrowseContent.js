@@ -1,6 +1,7 @@
 var _prevDOM = null;
 var _currentSearchText = '';
 var _bobOverlay = null;
+var _doubanMovieSearchResults = new Array();
 
 const QUERY_SUCCESSFUL = 1;
 const QUERY_WAITING = -99;
@@ -50,14 +51,22 @@ function getMovieInfo(node) {
     // replace special characters with space.
     movieTitle = movieTitle.replace(/[^\w\s]/g, ' ').trim();
     console.log('Movie found (special characters removed) :', movieTitle, movieYear);
-
-    // now let's send the message and start searching!
-    chrome.runtime.sendMessage({action: 'doubanSearch', title: movieTitle, year: movieYear});
-    
-    // insert texts to tell user that we are trying hard to get the results from Douban.
     _currentSearchText = (movieTitle + ' '+ movieYear).trim();
+
+    // insert texts to tell user that we are trying hard to get the results from Douban.
     _bobOverlay = node;
     injectRatings(node, {queryStatus: QUERY_WAITING});
+
+    // check if the movie has been queried before.
+    for (let i in _doubanMovieSearchResults) {
+        if (_doubanMovieSearchResults[i].searchText === _currentSearchText) {
+            injectRatings(node, _doubanMovieSearchResults[i]);
+            return;
+        }
+    }
+
+    // now let's send the message and start searching!
+    chrome.runtime.sendMessage({action: 'doubanSearch', title: movieTitle, year: movieYear, sendPopupMessage: false});
 }
 
 function browseParser(e) {
@@ -100,7 +109,7 @@ function addObserver(observer, node, opt) {
 
 // Mouse listener for any move event on the current document.
 document.addEventListener('mousemove', function (e) {
-    if (document.URL.includes('browse')) {
+    if (document.URL.includes('browse') || document.URL.includes('title')) {
         browseParser(e);
     } else if (document.URL.includes('watch')) {
 
@@ -117,7 +126,9 @@ chrome.runtime.onMessage.addListener(
                 // add a question mark next to rating
                 request.content.rating = request.content.rating.toString() + '?';
             }
-            if (_currentSearchText == request.content.searchTitle) {
+
+            _doubanMovieSearchResults.push(request.content);
+            if (_currentSearchText === request.content.searchText) {
                 injectRatings(_bobOverlay, request.content);
             }
         }

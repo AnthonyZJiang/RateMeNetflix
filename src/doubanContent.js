@@ -3,13 +3,6 @@ const QUERY_FAILED = -1;
 const QUERY_FUZZY = 0;
 
 var result = {
-    doubanTitle: '',
-    rating: -1,
-    ratingNum: '',
-    meta: '',
-    isWatched: false,
-    url: '',
-    searchTitle: '',
     queryStatus: QUERY_FAILED
 }
 
@@ -21,7 +14,7 @@ function getRating() {
         movieYear = '';
         movieTitle = searchText;
     } else {
-        movieTitle = searchText.substr(0, movieYear[0].index).trim();
+        movieTitle = searchText.substr(0, movieYear.index).trim();
         movieYear = movieYear[0];
     }
 
@@ -79,7 +72,8 @@ function getRating() {
         }
     }
     if (result.queryStatus !== QUERY_FAILED) {        
-        result.doubanTitle = searchResults[i].getElementsByClassName('title-text')[0].textContent
+        result.doubanTitle = searchResults[i].getElementsByClassName('title-text')[0].textContent;
+        result.imageUrl = searchResults[i].getElementsByClassName('cover')[0].src;
         result.rating = searchResults[i].getElementsByClassName('rating_nums')[0].textContent;
         result.ratingNum = searchResults[i].getElementsByClassName('pl')[0].textContent;
         result.meta = searchResults[i].getElementsByClassName('meta abstract')[0].textContent;
@@ -90,7 +84,8 @@ function getRating() {
         }
         result.isWatched = searchResults[i].getElementsByClassName('status-text').length == 0? false : true;
         result.url = searchResults[i].getElementsByTagName('a')[0].href;
-        result.searchTitle = movieTitle;
+        result.searchText = searchText;
+        result.netflixTitle = movieTitle;
     }
     
     console.log('(doubanContent.js) Rating/watched/url:', result.rating, result.isWatched, result.url);

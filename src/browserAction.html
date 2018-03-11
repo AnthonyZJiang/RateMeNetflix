@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+        body {
+            overflow:scroll;
+            min-width: 300px;
+            margin: 0px;
+            padding: 0px;
+            font-size: 12px;
+            background: white;
+            font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+        }
+        div.bd-nav {
+            color: #d5d5d5;
+            background-color: #545652;
+            width: 100%;
+            height: 28px;
+            line-height: 28px;
+        }
+        div.bd-nav-login {
+            float: right;
+            margin-right: 1em;
+        }
+        div.bd-nav-login-stat {
+            display: inline-block;   
+        }
+        .bd-nav-movie, .no-movie {
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+        }
+        a {
+            text-decoration-line: none;
+            color: #d5d5d5;
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+        }
+        .movie-poster {
+            max-height: 200px;
+            margin: 0.5em;
+        }
+        #movie-content {
+            color: #999;
+            line-height: 1.5em;
+        }
+        .movie-title {
+            font-size: 16px;
+            color:#37a;
+            white-space:nowrap;
+        }
+        .movie-rating {
+            color:#e09015;
+        }
+        .movie-rating-num {
+            color:#666666;
+        }
+        input {
+            -webkit-appearance: none;
+            padding: 0 22px;
+            height: 30px;
+            font-size: 12px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            background: #30A080;
+            color: #fff;
+            width: 89px;
+            box-sizing: content-box;
+        }
+        input:hover {
+            background-color: #2a8c70;
+        }
+        </style>
+    </head>
+
+    <body>
+        <div class="bd-nav">
+            <div class="bd-nav-login">
+                <div class="bd-nav-login-stat">
+                    <span class="bd-nav-login-query">豆瓣登录状态查询中...</span>
+                </div>
+            </div>              
+            <div class="bd-nav-movie">
+                <a href="https://movie.douban.com/">豆瓣电影</a>
+                <a href="https://www.netflix.com/browse">Netflix</a>
+            </div>
+        </div>
+        <div id="movie-content">
+            <!-- <div class="no-movie">
+                <p>没有播放任何电影</p>
+            </div> -->
+            <table>
+                <tr >
+                    <td id="td-movie-poster" rowspan="4">
+                        <!-- <img class="movie-poster" src="https://img1.doubanio.com/view/photo/s_ratio_poster/public/p2254455238.webp"> -->
+                    </td>
+                    <td id="td-movie-title">
+                        <!-- <div class="movie-title"> 女间谍 Spy (2015) </div> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td id="td-movie-rating">   
+                        <!-- <span class="movie-rating">7.5</span> -->
+                        <!-- <span class="movie-rating-num">(92307人评价)</span> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td id="td-movie-meta">
+                        <!-- <div class="meta abstract">美国 / 喜剧 / 动作 / 犯罪 / 凸务MADAM (港) / 麻辣贱谍(台)</div> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div id="td-movie-link">
+                            <!-- <input value="电影页面" type="button" class="movie-link"> -->
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script src="browserAction.js"></script>
+        <div></div>
+        <!-- <iframe src="https://m.douban.com/movie/subject/6390825" sandbox="allow-scripts allow-same-origin" width="768px" height="1024px"></iframe> -->
+    </body>
+</html>
