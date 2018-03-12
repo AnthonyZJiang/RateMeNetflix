@@ -1,5 +1,5 @@
-var NO_MOVIE = -1;
-var QUERY_FAILED = 0;
+var NO_MOVIE = -99;
+var QUERY_FAILED = -1;
 var QUERY_SUCCESSFUL = 1;
 
 window.addEventListener('click',function(e){

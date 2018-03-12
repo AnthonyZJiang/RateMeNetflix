@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Just play - 为你连接豆瓣电影和Netflix",
   "short_name": "Just play",
-  "version": "1.0",
+  "version": "1.2",
   "icons": { 
     "16": "img/logo@1x.png",
     "24": "img/logo@1.5x.png",
@@ -21,7 +21,7 @@
   
   "content_scripts": [
     {
-      "matches": ["https://movie.douban.com/subject_search?*"],
+      "matches": ["https://api.douban.com/v2/movie/*"],
       "js": ["doubanContent.js"],
       "all_frames": true
     },

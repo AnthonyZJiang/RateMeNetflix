@@ -7,88 +7,71 @@ var result = {
 }
 
 function getRating() {
-    // parse search text
-    var searchText = document.getElementsByClassName('inp')[0].getElementsByTagName('input')[0].value;
-    var movieYear = /\(\d{4,}\)/.exec(searchText);
+    // get <pre>, this is where js texts can be found
+    var node = document.getElementsByTagName('pre');
+    // parse js text
+    var js = JSON.parse(node[0].innerText);
+    // get search string
+    var searchStr = /(?=").*(?=")/.exec(js.title)[0];
+    searchStr = searchStr.substr(1,searchStr.length-1);
+    // get year and title
+    var movieYear = /\(\d{4,}\)/.exec(searchStr);
     if (movieYear == null) {
         movieYear = '';
-        movieTitle = searchText;
+        movieTitle = searchStr;
     } else {
-        movieTitle = searchText.substr(0, movieYear.index).trim();
-        movieYear = movieYear[0];
+        movieTitle = searchStr.substr(0, movieYear.index).trim();
+        movieYear = movieYear[0].substr(1, 4);
     }
 
-    var searchResults = document.getElementsByClassName('item-root');
-
-    console.log('(doubanContent.js) Search Text:', searchText)
-    console.log('(doubanContent.js) Title:', movieTitle)
-    console.log('(doubanContent.js) Year:', movieYear);
-
-    if (searchResults.length < 1) {
-        console.log('(doubanContent.js) Cannot find a match for "' + searchText + '"');
-        chrome.runtime.sendMessage({action: "searchOnDouban", content: null});
-        return;
-    }
-
-    if (searchResults.length < 1) {
-        console.log('Cannot find any result for "' + movieTitle + '".');
-        chrome.runtime.sendMessage({action: "searchOnDouban", content: null});
-    } else {
-        console.log('Found',searchResults.length, 'results for "' + movieTitle + '".');
-    }
-
-    for (var i = 0; i < searchResults.length; i++){
-        let title = searchResults[i].getElementsByClassName('title-text')[0].textContent;
-        // first check for year, this can't be wrong, if year is available
-        if (movieYear !== '') {
-            if (title.indexOf(movieYear) === -1){
-                continue;
-            }
+    // go through search results
+    var movieYearMatchList = new Array;
+    for (var i in js.subjects) {
+        // check year first. this can't be wrong
+        if (movieYear !== '' && movieYear !== js.subjects[i].year.trim()) {
+            // if don't match
+            continue;
         }
-        // check for movie name
+        movieYearMatchList.push(i);
+        // check movie title
         // generate regex
         let m = movieTitle.replace(/\s/g,'\\W+');
-        let matchedString = new RegExp(m, 'gi').exec(title);
+        let matchedString = new RegExp(m, 'gi').exec(js.subjects[i].original_title.trim());
         if (!matchedString) {
             continue;
         }
         result.queryStatus = QUERY_SUCCESSFUL;
         break;
     }
+
     if (result.queryStatus !== QUERY_SUCCESSFUL) {
-        // if no match has been found, take the first result that has a rating (because it could be an actor/actress, who does not have a rating.)
-        i = 0;
-        while (true) {            
-            if (i>searchResults.length-1) {
-                // no movie result at all
-                result.queryStatus = QUERY_FAILED;
-                break;
-            }
-            if (searchResults[i].getElementsByClassName('rating_nums').length) {
-                result.queryStatus = QUERY_FUZZY;
-                break;
-            }
-            i++;
+        // go through each movie's detail page and check for alt_title?
+        // prioritise movie title and check js.subjects[i].subtype==='tv' if it is a tv series?
+        // prioritise movie year in other cases?
+        // if year does not exist, return the first result
+        if (movieYear === '') {
+            result.queryStatus = QUERY_FUZZY;
+            i = 0;
+        } else {
+            result.queryStatus = QUERY_FUZZY;
+            i = movieYearMatchList[0];
         }
     }
+
     if (result.queryStatus !== QUERY_FAILED) {        
-        result.doubanTitle = searchResults[i].getElementsByClassName('title-text')[0].textContent;
-        result.imageUrl = searchResults[i].getElementsByClassName('cover')[0].src;
-        result.rating = searchResults[i].getElementsByClassName('rating_nums')[0].textContent;
-        result.ratingNum = searchResults[i].getElementsByClassName('pl')[0].textContent;
-        result.meta = searchResults[i].getElementsByClassName('meta abstract')[0].textContent;
-        // remove movie length info
-        var metaStr = result.meta.split('/');
-        if (metaStr[metaStr.length-1].includes('分钟')){
-            result.meta = result.meta.substr(0, result.meta.indexOf(metaStr[metaStr.length-1]) - 1);
-        }
-        result.isWatched = searchResults[i].getElementsByClassName('status-text').length == 0? false : true;
-        result.url = searchResults[i].getElementsByTagName('a')[0].href;
-        result.searchText = searchText;
-        result.netflixTitle = movieTitle;
+        result.doubanTitle = js.subjects[i].title;
+        result.imageUrl = js.subjects[i].images.small;
+        result.rating = js.subjects[i].rating.average;
+        result.ratingNum = '(' + js.subjects[i].collect_count.toString() + '人看过)';
+        result.meta = js.subjects[i].genres.join('/');
+        result.isWatched = false;
+        result.url = js.subjects[i].alt;
+        result.originalTitle = js.subjects[i].original_title;
+        result.year = js.subjects[i].year;
+        result.searchText = searchStr;
     }
-    
-    console.log('(doubanContent.js) Rating/watched/url:', result.rating, result.isWatched, result.url);
+
+    console.log(result.queryStatus);
     // send rating back to background.js
     chrome.runtime.sendMessage({action: 'doubanRated', content: result});
 }

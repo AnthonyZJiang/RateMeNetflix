@@ -58,6 +58,8 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 });
 
 function injectIFrame(title, year){
-    _frame.src = 'https://movie.douban.com/subject_search?cat=1002&search_text=' + title + ' '+ year;
+    _frame.src = 'https://api.douban.com/v2/movie/search?q=' + title + ' '+ year;
     _frame.sandbox = 'allow-scripts allow-same-origin';
 }
+
+injectIFrame('la la land', '(2016)')

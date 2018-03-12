@@ -1,14 +1,14 @@
-span.douban-logo {
+.douban-logo {
     margin-left: 1vw;
     margin-top: 15px;
     display: inline-block;
 }
 
 .douban-logo-svg {
-    height: 0.75vw;
+    height: 0.77vw;
 }
 
-span.douban-info {
+.douban-info {
     margin-left: 5px;
     margin-top: 15px;
     display: inline-block;
@@ -16,7 +16,13 @@ span.douban-info {
     font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
 }
 
-div.douban-title, div.douban-meta {
-    font-size: 0.7vw;
+.douban-title, .douban-meta {
+    font-size: 0.9vw;
+    margin-right: 0.5em;
     font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+}
+
+.douban-fuzzy {
+    font-size: 0.6vw;
+    margin-right: 0.5em;
 }
