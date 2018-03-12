@@ -21,13 +21,8 @@
   
   "content_scripts": [
     {
-      "matches": ["https://api.douban.com/v2/movie/*"],
-      "js": ["doubanContent.js"],
-      "all_frames": true
-    },
-    {
-      "matches": ["https://*.netflix.com/browse*", "https://*.netflix.com/watch*", "https://*.netflix.com/title*"],
-      "js": ["netflixBrowseContent.js", "inject.js", "netflixWatchContent.js"],
+      "matches": ["https://*.netflix.com/browse*", "https://*.netflix.com/watch*", "https://*.netflix.com/title*", "https://*.netflix.com/search*"],
+      "js": ["netflixBrowseContent.js", "inject.js", "netflixWatchContent.js", "doubanSearch.js"],
       "css": ["netflixBrowseContent.css"]
     }
   ],
@@ -35,6 +30,8 @@
   "permissions": ["activeTab", "tabs",
     "https://movie.douban.com/*", 
     "https://*.netflix.com/browse*",
+    "https://*.netflix.com/title*",
+    "https://*.netflix.com/search*",
     "https://*.netflix.com/watch*"],
 
     "web_accessible_resources": [

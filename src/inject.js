@@ -43,6 +43,10 @@ function addDivTextNode(className, text){
 }
 
 function injectRatings(node, doubanResult) {
+	if (doubanResult.queryStatus !== QUERY_WAITING && _currentMovieId !== doubanResult.movieId) {
+		return;
+	}
+
 	if (node) {
 		nodeTitle = node.getElementsByClassName('bob-title');
 		nodeBobPlayHitzone = node.getElementsByClassName('bob-play-hitzone');
@@ -56,7 +60,6 @@ function injectRatings(node, doubanResult) {
 
 			// only add the rest when query is successful (1) or fuzzy (0)
 			if (doubanResult.queryStatus >= 0) {
-
 				nodeBobPlayHitzone[0].getElementsByClassName('douban-info')[0].innerText = doubanResult.rating;
 				nodeBobPlayHitzone[0].appendChild(addTextNode('douban-info', doubanResult.ratingNum));
 				nodeBobPlayHitzone[0].appendChild(addTextNode('douban-info', doubanResult.isWatched ? '(已看)':''));

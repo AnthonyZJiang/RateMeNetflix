@@ -1,15 +1,30 @@
-var _netflixWatchContent_doubanMovieSearchResults;
-
 function getCurrentlyWatchingMovie(){
+    // get movie id
+    var movieId = document.getElementsByClassName('VideoContainer')[0].firstChild.id;
+    // check if we have something in search hist already
+    try {
+        for (var i in _doubanMovieSearchHist) {
+            if (_doubanMovieSearchHist[i].movieId === movieId) {
+                console.log('(watchContent.js): match found in search history list.')
+                chrome.runtime.sendMessage({action: 'watchMovieInfo', content: _doubanMovieSearchHist[i]});
+                return;
+            }
+        }
+    } catch (ex){ 
+        chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixWatchContent.js) Error occurred in finding movie in search result list.', exMessage: ex.message, exStack: ex.stack}); 
+    }
+
+    // if it is not in the search hist
     var movieTitle;
     var node;
+    var episodeText = null;
     if ((node = this.document.getElementsByClassName('ellipsize-text')).length) {   
         // while playing or paused
         if ((node = node[0]).childElementCount > 0){
             // tv series
             movieTitle = node.getElementsByTagName('h4')[0].innerText;
             if ((node = node.getElementsByTagName('span')).length) {
-                movieTitle += getEpisode(node[0].innerText);
+                episodeText = getEpisode(node[0].innerText);
             }
         } else {
             // movie
@@ -22,23 +37,10 @@ function getCurrentlyWatchingMovie(){
         var ex = new Error('cannot get movie title.');
         chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixWatchContent.js) Error occurred in getting movie title.', exMessage: ex.message, exStack: ex.stack});
     }
-    var isFound = false;
-    // check if the movie has been queried before.
-    try {
-        for (var i in _doubanMovieSearchResults) {
-            if (_doubanMovieSearchResults[i].searchText === movieTitle) {
-                isFound = true;
-                break;
-            }
-        }
-    }
-    catch (ex){ chrome.runtime.sendMessage({action:'caughtEx',message:'(netflixWatchContent.js) Error occurred in finding movie in search result list.', exMessage: ex.message, exStack: ex.stack}); }
+    movieTitle = movieTitle.replace(/[^\w\s]/g, ' ').trim();
 
-    if (isFound) {
-        chrome.runtime.sendMessage({action: 'watchMovieInfo', content: _doubanMovieSearchResults[i]});
-    } else {
-        chrome.runtime.sendMessage({action: 'doubanSearch', title: movieTitle, year: '', sendPopupMessage: true});
-    }
+    _currentSearchStr = episodeText ? movieTitle + ' ' + episodeText : movieTitle;
+    doubanSearchXHR(movieTitle, movieId, movieTitle, '', episodeText, true);
 }
 
 function getEpisode(text) {
@@ -51,7 +53,7 @@ function getEpisode(text) {
     if (parseInt(number) < 1) {
         return '';
     } else {
-        return ' 第' + getChineseNumber(number) + '季';
+        return '第' + getChineseNumber(number) + '季';
     }
 }
 
