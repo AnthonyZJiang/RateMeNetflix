@@ -95,9 +95,6 @@ function getChineseNumber(number) {
 }
 
 if (document.URL.includes('watch')) {
-    // chrome.runtime.sendMessage({action: 'getDoubanMovieSearchResults'}, function(response) {
-    //     _netflixWatchContent_doubanMovieSearchResults = response.content;
-    // });
     getCurrentlyWatchingMovie();
 } else {
     chrome.runtime.sendMessage({action: 'watchContent', content: null})

@@ -12,7 +12,7 @@ function doubanSearchXHR(searchStr, movieId, title, year, episodeText, sendToPop
             if (sendToPopUp) {
                 chrome.runtime.sendMessage({action: 'watchMovieInfo', content: result});
             } else {
-                injectRatings(_bobOverlay, result);
+                injectRatings(_nodeToInject, result);
             }
         } catch (ex) {
             chrome.runtime.sendMessage({action:'caughtEx',message:'(doubanSearch.js) Error occurred in parsing douban search result.', exMessage: ex.message, exStack: ex.stack});
@@ -79,7 +79,7 @@ function getRating(js, movieId, title, year, episodeText) {
         // add a question mark next to rating
         result.rating = result.queryStatus === QUERY_FUZZY ? js.subjects[i].rating.average + '?' : js.subjects[i].rating.average;
         result.ratingNum = '(' + js.subjects[i].collect_count.toString() + '人看过)';
-        result.meta = js.subjects[i].genres.join('/');
+        result.meta = js.subjects[i].genres.join(', ');
         result.isWatched = false;
         result.url = js.subjects[i].alt;
         result.originalTitle = js.subjects[i].original_title;

@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Just play - 为你连接豆瓣电影和Netflix",
   "short_name": "Just play",
-  "version": "1.2",
+  "version": "2.0",
   "icons": { 
     "16": "img/logo@1x.png",
     "24": "img/logo@1.5x.png",
@@ -11,7 +11,7 @@
     "128": "img/logo@8x.png"},
 
   "background": {
-    "scripts":["background.js", "doubanLoginStat.js"]
+    "scripts":["background.js", "doubanLoginStat.js","subtitleParser.js"]
   },
 
   "browser_action": {
@@ -21,18 +21,16 @@
   
   "content_scripts": [
     {
-      "matches": ["https://*.netflix.com/browse*", "https://*.netflix.com/watch*", "https://*.netflix.com/title*", "https://*.netflix.com/search*"],
-      "js": ["netflixBrowseContent.js", "inject.js", "netflixWatchContent.js", "doubanSearch.js"],
+      "matches": ["https://*.netflix.com/*"],
+      "js": ["netflixBrowseContent.js", "inject.js", "netflixWatchContent.js", "doubanSearch.js", "mutationObservers.js", "netflixSubtitle.js"],
       "css": ["netflixBrowseContent.css"]
     }
   ],
   
   "permissions": ["activeTab", "tabs",
     "https://movie.douban.com/*", 
-    "https://*.netflix.com/browse*",
-    "https://*.netflix.com/title*",
-    "https://*.netflix.com/search*",
-    "https://*.netflix.com/watch*"],
+    "https://*.netflix.com/*",
+    "https://api.douban.com/v2/movie*"],
 
     "web_accessible_resources": [
       "img/doubanLogo16x16.png",

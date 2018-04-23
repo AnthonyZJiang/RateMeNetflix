@@ -4,16 +4,33 @@
     display: inline-block;
 }
 
+span.douban-logo-jaw-bone {
+    display: inline-block;
+}
+
 .douban-logo-svg {
     height: 0.77vw;
 }
 
-.douban-info {
+svg.douban-logo-jaw-bone {
+    height: 1vw;
+}
+
+.douban-info, .douban-info-link {
     margin-left: 5px;
     margin-top: 15px;
     display: inline-block;
     font-size: 0.9vw;
     font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+}
+
+.douban-info-jaw-bone, .douban-info-link-jaw-bone {
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+}
+
+.douban-info-link-jaw-bone, .douban-info-link {
+    text-decoration: underline;
+    margin-right: .5em
 }
 
 .douban-title, .douban-meta {
@@ -22,7 +39,23 @@
     font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
 }
 
+.douban-title-jaw-bone {
+    font-size: 1.5vw;
+    margin-right: 1em;
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+}
+
+.douban-meta-jaw-bone {
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+}
+
 .douban-fuzzy {
     font-size: 0.6vw;
     margin-right: 0.5em;
+}
+
+.douban-fuzzy-jaw-bone {
+    font-size: 0.9vw;
+    margin-left: 0.5em;
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
 }

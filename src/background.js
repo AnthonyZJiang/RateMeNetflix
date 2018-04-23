@@ -2,6 +2,9 @@ var _netflixTabId;
 var _frame;
 var _sendPopupMessage = false;
 var _movieList = new Array();
+var _subtitle = null;
+var _subtitleInfo = {movieId:'', fileName:'', timeSliderVal:'0', timeTextBoxVal:'', heightSliderVal:'0'};
+var _subtitleEnc = 'utf8';
 _frame = document.createElement('iframe');
 document.body.appendChild(_frame);
 
@@ -41,6 +44,35 @@ chrome.runtime.onMessage.addListener(
             }
             // send list to netflix content page
             chrome.tabs.sendMessage(sender.tab.id, { action: 'pushMovieSearchResults', content: _movieList })
+            _netflixTabId = sender.tab.id;
+            return;
+        }
+
+        if (request.action === 'loadSubtitle') {
+            _subtitle = parseSrt(request.content.subtitleObj,'utf8');
+            _subtitleInfo = request.content.subtitleInfo;
+            // reload script
+            chrome.tabs.executeScript(_netflixTabId, { file: "netflixSubtitle.js" });
+            chrome.tabs.sendMessage(_netflixTabId, { action: 'playSubtitle', content: _subtitle });
+            return;
+        }
+
+        if (request.action === 'clearSubtitle') {
+            _subtitle = '';
+            _subtitleInfo = '';
+            return;
+        }
+
+        if (request.action === 'getLoadedSubtitle') {
+            sendResponse(_subtitleInfo);
+            return;
+        }
+
+        if (request.action === 'adjSubSettings') {
+            _subtitleInfo.timeSliderVal = request.timeSliderVal;
+            _subtitleInfo.timeTextBoxVal = request.timeTextBoxVal;
+            _subtitleInfo.heightSliderVal = request.heightSliderVal
+            return;
         }
         
         console.log('(background.js) Unhandled message received: ', request.action)
@@ -48,14 +80,14 @@ chrome.runtime.onMessage.addListener(
 );
 
 // on page update
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    // douban login status
-	if (changeInfo.status === 'complete' && (/netflix\.com/.test(tab.url) || /douban\.com/.test(tab.url))) {
-        //check douban login status
-        chrome.tabs.executeScript(tab.id, { file: "doubanLoginStat.js" });
-        console.log('douban login status query requested.')
-	}
-});
+// chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+//     // douban login status
+// 	if (changeInfo.status === 'complete' && (/douban\.com/.test(tab.url))) {
+//         //check douban login status
+//         chrome.tabs.executeScript(tab.id, { file: "doubanLoginStat.js" });
+//         console.log('douban login status query requested.')
+// 	}
+// });
 
 function injectIFrame(title, year){
     _frame.src = 'https://api.douban.com/v2/movie/search?q=' + title + ' '+ year;
