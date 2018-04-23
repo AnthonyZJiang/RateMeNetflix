@@ -1,4 +1,0 @@
-#appMountPoint > div > div > div > div > div > div.nfp.AkiraPlayer.classic-ui > div > div.controls.legacy-controls-styles.PlayerControls--with-dim-background.legacy.dimmed > div > div.PlayerControls--main-controls > div.PlayerControls--bottom-controls.nfp-control-row.bottom-controls > div.PlayerControls--progress-control-row.PlayerControls--progress-control-row-standard > div.PlayerControls--control-element.progress-control.PlayerControls--control-element-hidden > div > div > div.scrubber-head
-
-
-<div aria-label="Seek time scrubber" aria-valuemax="3816" aria-valuemin="0" aria-valuenow="132" aria-valuetext="2:12 of 1:03:36" class="scrubber-head" tabindex="0" style="left: 3.48%;"></div>
