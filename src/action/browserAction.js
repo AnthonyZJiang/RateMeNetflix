@@ -2,8 +2,9 @@ var NO_MOVIE = -99;
 var QUERY_FAILED = -1;
 var QUERY_SUCCESSFUL = 1;
 var _movieId;
-
-subtitleUploader();
+var _subtitleSettings;
+var TEXT_ZOOM_MAX = 3;
+var TEXT_ZOOM_MIN = 0.5;
 
 window.addEventListener('click',function(e){
     if(e.target.href!==undefined){
@@ -29,42 +30,8 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-
-function doubanXHR() {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        console.log('Status changed');
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log('movie.douban.com responded');
-
-            // add a link node
-            var aNode = document.createElement('A');
-            aNode.setAttribute('class','bd-nav-account');
-            aNode.setAttribute('href','https://www.douban.com/');
-            
-            if (this.responseText.includes('class="nav-login"')) {
-                // if not logged in
-                aNode.innerText = '未登录豆瓣';
-            } else {
-                // if logged in
-                try {
-                    let doc = new DOMParser().parseFromString(this.responseText, 'text/html');	
-                    aNode.innerText = doc.getElementsByClassName('nav-user-account')[0].getElementsByClassName('bn-more')[0].children[0].innerText;
-                    aNode.href = 'https://movie.douban.com/mine';
-                }
-                catch (ex) {
-                    chrome.runtime.sendMessage({action:'caughtEx',message:'(browserAction.js) Error occurred in querying douban login status.', exMessage: ex.message, exStack: ex.stack});
-                    aNode.innerText = '已登录豆瓣';
-                }
-            }            
-            document.getElementsByClassName('bd-nav-login-stat')[0].appendChild(aNode)
-            // remove query text
-            document.getElementsByClassName('bd-nav-login-query')[0].remove();
-        }
-    }
-    xhr.open('GET', 'https://movie.douban.com/', true);
-    xhr.send();
-}
+subtitleUploader();
+resetSubtitleSettings();
 
 function createDivNode(className, content) {
     var e = document.createElement('DIV');
@@ -95,7 +62,9 @@ function addContents(query) {
     } else {
         c = query.content;
         _movieId = c.movieId;
-        getLoadedSubtitleInfo();
+        console.log('query successful:',c);
+        console.log('movieId:',_movieId)
+        getLoadedSubtitleInfo(c.movieId);
 
         // add poster
         let e = document.createElement('IMG');
@@ -105,7 +74,7 @@ function addContents(query) {
         node.height = '28px';
         node.appendChild(e);
         // add title
-        e = createDivNode('movie-title', c.doubanTitle);
+        e = createDivNode('movie-title', c.doubanTitle + '(' + c.year + ')');
         node = document.getElementById('td-movie-title');
         node.height = '28px';
         node.appendChild(e);
@@ -129,30 +98,39 @@ function addContents(query) {
         e.onclick = function () {chrome.tabs.create({url:c.url})}
         node = document.getElementById('td-movie-link');
         node.appendChild(e);
+        // subhd link
+        e = document.getElementById('subtitle-subhd-link');
+        e.href = "http://subhd.com/search0/" + c.originalTitle.replace(/[!"%$£^&*()@\':;#~,.?><|\\//]+/g,' ') + '%20' + c.year;
         // un-hide table
         document.getElementById("movie-content-table").style = "display: initial";
         // un-hide subtitle
-        document.getElementById("subtitle-panel").style = "display: initial";
+        document.getElementById("subtitle-panel").style = "display: block";
     }
 }
 
-function getLoadedSubtitleInfo(){
+function getLoadedSubtitleInfo(movieId){
     chrome.runtime.sendMessage({action:"getLoadedSubtitle"}, function (response) {
         if (response != null)
         {
-            if (response.movieId == _movieId)
+            console.log('settings received', response);
+            if (response.subtitleInfo.movieId === movieId)
             {    
-                console.log('settings received', response);
-                console.log('settings sliderVal', response.sliderVal);
-                console.log('settings textBoxVal', response.textBoxVal);
-                document.getElementById("subtitle-uploader").nextElementSibling.innerHTML = response.fileName;
+                console.log('settings sliderVal', response.subtitleInfo.sliderVal);
+                console.log('settings textBoxVal', response.subtitleInfo.textBoxVal);
+                document.getElementById("subtitle-uploader").nextElementSibling.innerHTML = response.subtitleInfo.fileName;
                 document.getElementById("subtitle-settings-panel").style = "display: initial";
-                document.getElementById("subtitle-micro-adjustment-slider").value = response.timeSliderVal;
-                document.getElementById("subtitle-adjustment").value = response.timeTextBoxVal;
-                document.getElementById("subtitle-height-slider").value = response.heightSliderVal;
+                document.getElementById("subtitle-micro-adjustment-slider").value = response.subtitleInfo.timeSliderVal;
+                document.getElementById("subtitle-adjustment").value = response.subtitleInfo.timeTextBoxVal;
+                document.getElementById("subtitle-height-slider").value = response.subtitleInfo.heightSliderVal;
+                document.getElementById(response.subtitleInfo.colourPickerChecked).checked = true;
+                document.getElementById('subtitle-font-size-value').innerHTML = (_subtitleSettings.textZoom * 100).toString() + '%';
+                _subtitleSettings = response.subtitleSettings;
+                document.getElementById('subtitle-switch').checked = !_subtitleSettings.disabled;
+                document.getElementById('subtitle-collapse').className = _subtitleSettings.disabled?'collapse':'collapse in';
+                chrome.runtime.sendMessage({action:"replaySubtitle"})
             }
         }
-        subtitleAdjustmentOnChange();
+        subtitleAdjustments();
     })
 }
 
@@ -177,13 +155,14 @@ function subtitleUploader(){
             label.childNodes[3].innerHTML = fileName;
             let reader = new FileReader();
             reader.onloadend = function (){
+                resetSubtitleSettings();
+                updateSettings({subtitleSettings:_subtitleSettings});
                 chrome.runtime.sendMessage({action: 'loadSubtitle', content: {
                     subtitleObj: reader.result,
                     subtitleInfo: {
                         fileName: fileName,
                         movieId: _movieId}
                     }});
-                    
                 document.getElementById("subtitle-settings-panel").style = "display: initial";
             }
 
@@ -194,10 +173,16 @@ function subtitleUploader(){
     });
 }
 
-function subtitleAdjustmentOnChange(){
+function subtitleAdjustments(){
+    // switch
+    document.getElementById("subtitle-switch").onchange = function (e) {
+        _subtitleSettings.disabled = !e.srcElement.checked;
+        updateSettings({action: 'updateSubSettings'});
+    }
+
+    // time
     var timeTextBox = document.getElementById("subtitle-adjustment");
     var timeSlider = document.getElementById("subtitle-micro-adjustment-slider");
-    var heightSlider = document.getElementById("subtitle-height-slider");
     var valueNode = document.getElementById("subtitle-micro-adjustment-val");
    
     function getTimeAdjustmentVal() {
@@ -217,13 +202,12 @@ function subtitleAdjustmentOnChange(){
         var val = getTimeAdjustmentVal()
         valueNode.innerHTML = getTimeAdjustmentText(val);
 
-        if (val != 0)
+        if (val != _subtitleSettings.timeOffset)
         {
-            updateSettings({action: 'adjSubSettings', 
-            timeOffSet: val, 
+            _subtitleSettings.timeOffset = val*1000;
+            updateSettings({action: 'updateSubSettings',
             timeSliderVal: timeSlider.value, 
-            timeTextBoxVal: timeTextBox.value, 
-            heightSliderVal: heightSlider.value});
+            timeTextBoxVal: timeTextBox.value});
         }
     }    
 
@@ -231,26 +215,69 @@ function subtitleAdjustmentOnChange(){
     console.log('valueNode', getTimeAdjustmentText(getTimeAdjustmentVal()));
     timeTextBox.oninput = onTimeChangeFunc;
     timeSlider.oninput = onTimeChangeFunc;
+
+    // height    
+    var heightSlider = document.getElementById("subtitle-height-slider");
     heightSlider.oninput = function(){
-        updateSettings({action: 'adjSubSettings', 
-        height: parseInt(heightSlider.value,10) + 80, 
-        timeSliderVal: timeSlider.value, 
-        timeTextBoxVal: timeTextBox.value, 
-        heightSliderVal: heightSlider.value})
+        var height = parseInt(heightSlider.value,10) + 80;
+
+        if (height != _subtitleSettings.subHeight)
+        {
+            _subtitleSettings.subHeight = height;
+            updateSettings({action: 'updateSubSettings', 
+            heightSliderVal: heightSlider.value}, 'height')
+        }
+    }
+
+    // colour
+    var colourNodes = document.getElementsByName('colour-picker-radio');
+    for (let i = 0; i<colourNodes.length; i++){
+        colourNodes[i].onchange = function(e) {
+            var colour = e.srcElement.getAttribute('colourname');
+            
+            if (colour != _subtitleSettings.textColour){
+                _subtitleSettings.textColour = colour;
+                updateSettings({action: 'updateSubSettings',
+                colourPickerChecked: e.srcElement.id}, 'colour')
+            }
+        }
+    }
+
+    // text size
+    var sizeValNode = document.getElementById('subtitle-font-size-value');
+    document.getElementById('subtitle-font-size-plus').onclick = function() {
+        _subtitleSettings.textZoom += 0.1;        
+        if (_subtitleSettings.textZoom > TEXT_ZOOM_MAX)
+        _subtitleSettings.textZoom = TEXT_ZOOM_MAX;
+        sizeValNode.innerHTML = (_subtitleSettings.textZoom * 100).toFixed(0) + '%';
+        updateSettings({subtitleSettings: _subtitleSettings}, 'textZoom')
+    }
+    document.getElementById('subtitle-font-size-minus').onclick = function() {
+        _subtitleSettings.textZoom -= 0.1;      
+        if (_subtitleSettings.textZoom < TEXT_ZOOM_MIN)
+            _subtitleSettings.textZoom = TEXT_ZOOM_MIN;
+        sizeValNode.innerHTML = (_subtitleSettings.textZoom * 100).toFixed(0) + '%';
+        updateSettings({subtitleSettings: _subtitleSettings}, 'textZoom')
     }
 }
 
-
-
-function updateSettings(settings) {
+function updateSettings(settings, settingContent) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-       chrome.tabs.sendMessage(tabs[0].id, settings);
+       chrome.tabs.sendMessage(tabs[0].id, {action: 'updateSubSettings', subtitleSettings:_subtitleSettings, settingContent: settingContent});
     });
+    settings.subtitleSettings = _subtitleSettings;
     chrome.runtime.sendMessage(settings)
   }
 
+function resetSubtitleSettings(){
+    _subtitleSettings = {
+        textZoom: 1,
+        textColour: '#fff',
+        timeOffset: 0,
+        subHeight: 75,
+        disabled: false
+    }
+}
+
 chrome.tabs.executeScript(null, { file: "netflixWatchContent.js" });
 
-setTimeout(function () {
-    doubanXHR();
-}, 0000);

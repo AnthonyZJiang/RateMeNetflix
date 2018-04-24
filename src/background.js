@@ -2,15 +2,18 @@ var _netflixTabId;
 var _frame;
 var _sendPopupMessage = false;
 var _movieList = new Array();
-var _subtitle = null;
-var _subtitleInfo = {movieId:'', fileName:'', timeSliderVal:'0', timeTextBoxVal:'', heightSliderVal:'0'};
-var _subtitleEnc = 'utf8';
+var _subtitle;
+var _subtitleInfo;
+var _subtitleSettings;
+
 _frame = document.createElement('iframe');
 document.body.appendChild(_frame);
+resetLoadedSubtitle();
 
 // on message
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
+        console.log(request.action, request, sender)
         // get watched status douban
         if (request.action == "watchedStatus") {
             _sendPopupMessage = request.sendPopupMessage;
@@ -49,29 +52,45 @@ chrome.runtime.onMessage.addListener(
         }
 
         if (request.action === 'loadSubtitle') {
-            _subtitle = parseSrt(request.content.subtitleObj,'utf8');
-            _subtitleInfo = request.content.subtitleInfo;
+            _subtitle = parseSrt(request.content.subtitleObj);
+            _subtitleInfo.movieId = request.content.subtitleInfo.movieId;
+            _subtitleInfo.fileName = request.content.subtitleInfo.fileName;
             // reload script
             chrome.tabs.executeScript(_netflixTabId, { file: "netflixSubtitle.js" });
             chrome.tabs.sendMessage(_netflixTabId, { action: 'playSubtitle', content: _subtitle });
             return;
         }
 
+        if (request.action === 'replaySubtitle') {
+            if (_subtitle != null)            
+            {
+                chrome.tabs.sendMessage(_netflixTabId, { action: 'playSubtitle', content: _subtitle });
+            }
+            return;
+        }
+
         if (request.action === 'clearSubtitle') {
-            _subtitle = '';
-            _subtitleInfo = '';
+            resetLoadedSubtitle();
             return;
         }
 
         if (request.action === 'getLoadedSubtitle') {
-            sendResponse(_subtitleInfo);
+            sendResponse({subtitleInfo: _subtitleInfo, subtitleSettings: _subtitleSettings});
             return;
         }
 
-        if (request.action === 'adjSubSettings') {
-            _subtitleInfo.timeSliderVal = request.timeSliderVal;
-            _subtitleInfo.timeTextBoxVal = request.timeTextBoxVal;
-            _subtitleInfo.heightSliderVal = request.heightSliderVal
+        if (request.action === 'updateSubSettings') {
+            if (typeof(request.timeSliderVal)!='undefined')
+                _subtitleInfo.timeSliderVal = request.timeSliderVal;
+            if (typeof(request.timeTextBoxVal)!='undefined')
+                _subtitleInfo.timeTextBoxVal = request.timeTextBoxVal;
+            if (typeof(request.heightSliderVal)!='undefined')
+                _subtitleInfo.heightSliderVal = request.heightSliderVal;
+            if (typeof(request.colourPickerChecked)!='undefined')
+                _subtitleInfo.colourPickerChecked = request.colourPickerChecked;
+            if (typeof(request.textSize)!='undefined')
+                _subtitleInfo.textSize = request.textSize;
+            _subtitleSettings = request.subtitleSettings;
             return;
         }
         
@@ -92,4 +111,16 @@ chrome.runtime.onMessage.addListener(
 function injectIFrame(title, year){
     _frame.src = 'https://api.douban.com/v2/movie/search?q=' + title + ' '+ year;
     _frame.sandbox = 'allow-scripts allow-same-origin';
+}
+
+function resetLoadedSubtitle(){
+    _subtitle = null;
+    _subtitleInfo = {movieId:'', 
+                    fileName:'', 
+                    textZoom:1,
+                    timeSliderVal:'0', 
+                    timeTextBoxVal:'', 
+                    heightSliderVal:'-5', 
+                    colourPickerChecked:'colour-white-radio'};
+    _subtitleSettings = null;
 }

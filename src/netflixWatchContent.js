@@ -15,6 +15,7 @@ function getCurrentlyWatchingMovie(){
     }
 
     // if it is not in the search hist
+    console.log('Not In Search History');
     var movieTitle;
     var node;
     var episodeText = null;
