@@ -91,13 +91,16 @@ function waitForVideoElement(subtitles) {
 function appendSubtitlesContainer(video) {
     if (typeof video !== "undefined") {
         var videoContainer = video.parentNode;
-        var subsContainer = document.createElement("DIV");
-        subsContainer.className = 'dbr dbnf-subs-container';
+        var subsContainer
+        if (!(subsContainer = videoContainer.querySelector('.dbnf-subs-container'))) {
+            var subsContainer = document.createElement("DIV");
+            subsContainer.className = 'dbr dbnf-subs-container';
+            videoContainer.appendChild(subsContainer);
+        }
         subsContainer.style.fontSize = (_textSizeBase + _subtitleSettings.fontSize).toString() + 'px';
         subsContainer.style.color = _subtitleSettings.fontColour;
         subsContainer.style.height = (1-_subtitleSettings.subHeight).toString() + '%';
         subsContainer.style.top = _subtitleSettings.subHeight.toString() + '%';
-        videoContainer.appendChild(subsContainer);
         _subsContainer = subsContainer;
         //alwaysCheckThatSubtitlesContainerIsAppended();
     }
