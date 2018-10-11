@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Just play - 为你连接豆瓣电影和Netflix",
   "short_name": "Just play",
-  "version": "2.0",
+  "version": "3.0",
   "icons": { 
     "16": "img/logo@1x.png",
     "24": "img/logo@1.5x.png",
@@ -11,7 +11,12 @@
     "128": "img/logo@8x.png"},
 
   "background": {
-    "scripts":["background.js", "doubanLoginStat.js","subtitleParser.js"]
+    "scripts":[
+      "js/background/background.js",   
+      "js/background/rating/rating.js",  
+      "js/background/rating/douban.js",
+      "js/background/subtitleParser.js"
+    ]
   },
 
   "browser_action": {
@@ -22,8 +27,15 @@
   "content_scripts": [
     {
       "matches": ["https://*.netflix.com/*"],
-      "js": ["netflixBrowseContent.js", "inject.js", "netflixWatchContent.js", "doubanSearch.js", "mutationObservers.js", "netflixSubtitle.js"],
-      "css": ["netflixBrowseContent.css"]
+      "js": [
+        "js/external/jquery-3.1.1.min.js",
+        "js/contentScript.js",
+        "js/extract.js", 
+        "js/injectRating.js",  
+        "js/listContents.js",  
+        "js/playerContents.js", 
+        "js/injectSubtitle.js"],
+      "css": ["listContents.css"]
     }
   ],
   

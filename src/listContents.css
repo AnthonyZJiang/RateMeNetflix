@@ -1,0 +1,60 @@
+.dbr-logo-box {
+    display: inline-block;
+    position: relative;
+}
+
+.dbr-logo-box-jawbone {
+    display: inline-block;
+    position: relative;
+}
+
+.dbr-logo-svg {
+    height: 0.9vw;
+    position: absolute;
+    bottom: -0.15vw;
+    left: -0.9vw;
+}
+
+.dbr-logo-svg-jawbone {
+    height: 1vw;
+}
+
+.dbr {
+    font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+}
+
+.dbr-title-card {  
+    font-size: 0.8vw;
+}
+
+.dbr-box {
+    margin-top: 5px;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    text-align: right;
+}
+
+.dbr-fuzzy {
+    font-size: 0.6vw;
+}
+
+.dbr-inline-block {
+    display: inline-block;   
+    margin-right: inherit; 
+}
+
+.dbr-details-jawbone {  
+    font-size: 0.8em;
+}
+
+.dbr-link-jawbone {
+    text-decoration: underline;
+    margin-right: inherit;
+}
+
+.dbnf-subs-container {
+    width: 80%;
+    left: 10%;
+    position:inherit;
+    text-align: center;
+}

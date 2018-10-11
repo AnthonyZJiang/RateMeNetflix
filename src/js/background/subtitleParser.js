@@ -1,4 +1,8 @@
-// adopted from https://github.com/bazh/subtitles-parser by bazh
+/*!
+ * parseSrt and timeMs are modified work of the original work of Bazh (https://github.com/bazh/subtitles-parser)
+ * Copyright (c) 2013 bazh <interesno@gmail.com>
+ * Licensed under the MIT License
+ */
 
 function parseSrt(data)
 {

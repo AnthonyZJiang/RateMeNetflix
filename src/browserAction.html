@@ -41,13 +41,6 @@
                 height: 28px;
                 line-height: 28px;
             }
-            div.bd-nav-login {
-                float: right;
-                margin-right: 1em;
-            }
-            div.bd-nav-login-stat {
-                display: inline-block;   
-            }
             .bd-nav-movie, .no-movie {
                 padding-left: 0.5em;
                 padding-right: 0.5em;
@@ -342,12 +335,7 @@
     </head>
 
     <body>
-        <div class="bd-nav">
-            <div class="bd-nav-login">
-                <div class="bd-nav-login-stat">
-                    <span class="bd-nav-login-query">豆瓣登录状态查询中...</span>
-                </div>
-            </div>              
+        <div class="bd-nav">           
             <div class="bd-nav-movie">
                 <a href="https://movie.douban.com/">豆瓣电影</a>
                 <a href="https://www.netflix.com/browse">Netflix</a>
@@ -436,11 +424,11 @@
                                     <span class="checkmark"></span>
                                 </label>
                                     <label class="subtitle-colour-picker" id="colour-green">
-                                    <input type="radio" name="colour-picker-radio" colourname="#00bfff" id="colour-green-radio">
+                                    <input type="radio" name="colour-picker-radio" colourname="#52cd32" id="colour-green-radio">
                                     <span class="checkmark"></span>
                                 </label>
                                 <label class="subtitle-colour-picker" id="colour-blue">
-                                    <input type="radio" name="colour-picker-radio" colourname="#52cd32" id="colour-blue-radio">
+                                    <input type="radio" name="colour-picker-radio" colourname="#00bfff" id="colour-blue-radio">
                                     <span class="checkmark"></span>
                                 </label>
                             </td>
@@ -460,7 +448,7 @@
                                         <path d="M57.09,28.47h6.77v4.62h-18V28.47h6.75" transform="translate(-1.2 -6)"/>
                                     </svg>
                                 </span>
-                                <span id="subtitle-font-size-value">100%</span>
+                                <span id="subtitle-font-size-value">40px</span>
                             </td>
                         </tr>
                     </table>                    
@@ -475,11 +463,10 @@
                 </a>
             </div>
         </div>
-        <script src="action\doubanStatus.js"></script>
-        <script src="doubanSearch.js"></script>
-        <script src="action\browserAction.js"></script>
-        <script src="action\external\jquery.min.js"></script>
-        <script src="action\external\bootstrap.min.js"></script>
+        <script src="js/external/jquery-3.1.1.min.js"></script>
+        <script src="js/external/bootstrap.min.js"></script>
+        <script src="js/action/browserAction.js"></script>
+        <script src="js/action/subtitleAdjustments.js"></script>
         <!-- <iframe src="https://m.douban.com/movie/subject/6390825" sandbox="allow-scripts allow-same-origin" width="768px" height="1024px"></iframe> -->
     </body>
 </html>

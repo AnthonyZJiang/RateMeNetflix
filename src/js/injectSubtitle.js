@@ -1,20 +1,22 @@
-// adopted from https://goo.gl/ENUXrS by assafey
+// modified from the original work by assafey available at https://goo.gl/ENUXrS; no license at the time of modification (11/10/2018).
+
 var _subtitleSettings = {
-    textZoom: 1,
-    textColour: '#fff',
-    timeOffset: 0,
+    fontSize: 0,
+    fontColour: '#fff',
+    timeOffset1: 0,
+    timeOffset2: 0,
     subHeight: 75,
     disabled: true
 }
 
-var _textSizeBase = 4;
+var _textSizeBase = 40;
 var _started = false;
 var _subsContainer = null;
 var _currentIdx = -1;
 var _timeoutToken = null;
 
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+    function(request) {
         // get watched status douban
         if (request.action == 'playSubtitle') {
             if (_started === false)
@@ -29,18 +31,18 @@ chrome.runtime.onMessage.addListener(
             _subtitleSettings = request.subtitleSettings;
             _currentIdx = -1;
             if (_subsContainer != null){
-                if (request.settingContent === 'height')
+                if (request.settingContent === 'subHeight' || request.settingContent === 'all')
                 {
                     _subsContainer.style.top = _subtitleSettings.subHeight.toString() + '%';
                     _subsContainer.style.height = (100 - _subtitleSettings.subHeight).toString() + '%';
                 }
-                if (request.settingContent === 'textZoom')
+                if (request.settingContent === 'fontSize' || request.settingContent === 'all')
                 {
-                    _subsContainer.style.fontSize = (100 * _textSizeBase * _subtitleSettings.textZoom).toString() + '%';
+                    _subsContainer.style.fontSize = (_textSizeBase + _subtitleSettings.fontSize).toString() + 'px';
                 }
-                if (request.settingContent === 'colour')
+                if (request.settingContent === 'fontColour' || request.settingContent === 'all')
                 {
-                    _subsContainer.style.color = _subtitleSettings.textColour;
+                    _subsContainer.style.color = _subtitleSettings.fontColour;
                 }
             }
         }
@@ -73,8 +75,8 @@ function waitForVideoElement(subtitles) {
         })
         
         function onTimeUpdate() {        
-            if (!_subtitleSettings.disable) {
-                var subsContainer = document.getElementById("netflix-subs-container");                    
+            if (!_subtitleSettings.disabled) {
+                var subsContainer = document.querySelector(".dbnf-subs-container");                    
                 renderSubtitles(subsContainer, video.currentTime*1000, subtitles);
             }
         }
@@ -90,15 +92,9 @@ function appendSubtitlesContainer(video) {
     if (typeof video !== "undefined") {
         var videoContainer = video.parentNode;
         var subsContainer = document.createElement("DIV");
-        subsContainer.id = "netflix-subs-container";
-        subsContainer.style.width = "80%";
-        subsContainer.style.left = "10%";
-        subsContainer.style.position = "inherit";    
-        subsContainer.style.textAlign = "center";
-        subsContainer.style.fontFamily = "-apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif";
-        
-        subsContainer.style.fontSize = (100 * _textSizeBase * _subtitleSettings.textZoom).toString() + '%';
-        subsContainer.style.color = _subtitleSettings.textColour;
+        subsContainer.className = 'dbr dbnf-subs-container';
+        subsContainer.style.fontSize = (_textSizeBase + _subtitleSettings.fontSize).toString() + 'px';
+        subsContainer.style.color = _subtitleSettings.fontColour;
         subsContainer.style.height = (1-_subtitleSettings.subHeight).toString() + '%';
         subsContainer.style.top = _subtitleSettings.subHeight.toString() + '%';
         videoContainer.appendChild(subsContainer);
@@ -108,7 +104,7 @@ function appendSubtitlesContainer(video) {
 }
 
 function alwaysCheckThatSubtitlesContainerIsAppended() {    
-    if (document.getElementById("netflix-subs-container") === null) {        
+    if (document.querySelector(".dbnf-subs-container") === null) {        
         appendSubtitlesContainer();
     }
 
@@ -120,8 +116,8 @@ function alwaysCheckThatSubtitlesContainerIsAppended() {
 
 function renderSubtitles(subsContainer, currentTime, subtitles) {          
     var result = findSubtitleNaively(currentTime, subtitles);
-    console.log('result returned --> currentIdx:',_currentIdx, ';offset:',_subtitleSettings.timeOffset, ';result:', result);
-    console.log()
+    //console.log('result returned --> currentIdx:',_currentIdx, ';offset:',_subtitleSettings.timeOffset, ';result:', result);
+    //console.log()
     if (result !== null && result.id !== _currentIdx) { 
         console.log('%cSub added -->', 'color: white; background: black', 't:', currentTime, result.subtitle); 
         _currentIdx = result.id;     
@@ -152,14 +148,18 @@ function clearSubtitle(subsContainer, ms, text) {
 function findSubtitleNaively(currentTime, subtitles) {
     for (var idx = 0; idx < subtitles.length; idx++) {
         var text = subtitles[idx].text;
-        var start = subtitles[idx].startTime + parseInt(_subtitleSettings.timeOffset, 10);
-        var end = subtitles[idx].endTime + parseInt(_subtitleSettings.timeOffset, 10);
+        var start = subtitles[idx].startTime + parseInt(getTotalTimeOffsetMs(), 10);
+        var end = subtitles[idx].endTime + parseInt(getTotalTimeOffsetMs(), 10);
         if (currentTime >= start && currentTime <= end) {
             return {subtitle: subtitles[idx], id: idx};
         }
     }
 
     return null;
+}
+
+function getTotalTimeOffsetMs() {
+    return (_subtitleSettings.timeOffset1+_subtitleSettings.timeOffset2) * 1000
 }
 
 function clearSubtitleSettings(){
