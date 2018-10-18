@@ -3,6 +3,8 @@
   "name": "Netflix豆瓣电影助手",
   "short_name": "Netflix-豆瓣",
   "version": "3.1",
+  
+  "description": "连接豆瓣电影和Netflix的桥梁。",
   "icons": { 
     "16": "img/logo@1x.png",
     "24": "img/logo@1.5x.png",

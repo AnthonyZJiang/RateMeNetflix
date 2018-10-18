@@ -1,10 +1,5 @@
 'use strict'
 
-var QUERY_FAILED = -1;
-var QUERY_SUCCESSFUL = 1;
-var _movieId;
-var _subtitleSettings;
-
 window.addEventListener('click', function (e) {
     if (e.target.href !== undefined) {
         chrome.tabs.create({
@@ -55,18 +50,4 @@ chrome.tabs.getSelected(null, function (tab) {
 
 function getDoubanMovieQueryLink() {
     return 'https://movie.douban.com/subject_search?search_text=' + document.getElementById('db-query').value + '&cat=1002';
-}
-
-function createDivNode(className, content) {
-    var e = document.createElement('DIV');
-    e.className = className;
-    e.innerText = content;
-    return e;
-}
-
-function createSpanNode(className, content) {
-    var e = document.createElement('SPAN');
-    e.className = className;
-    e.innerText = content;
-    return e;
 }

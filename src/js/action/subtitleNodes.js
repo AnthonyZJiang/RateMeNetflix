@@ -1,5 +1,8 @@
 'use strict'
 
+var _subtitleSettings;
+var _movieId;
+
 document.getElementById("subtitle-uploader").addEventListener('change', function (event) {
     let fileName = getSubtitleFileName(event.target.value);
     if (!fileName) {

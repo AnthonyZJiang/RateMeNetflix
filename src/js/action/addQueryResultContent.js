@@ -1,5 +1,8 @@
 'use strict'
 
+var QUERY_FAILED = -1;
+var QUERY_SUCCESSFUL = 1;
+
 function addQueryResultToDocument(movieObject) {
     if (movieObject.doubanRating.queryState == QUERY_FAILED) {
         addQueryFailedContent();
@@ -102,4 +105,18 @@ function getTableElementByIdAndSetHeight(elementId) {
 
 function hideDoubanQueryNode() {
     document.getElementById('db-query-wrapper').style = "display: none;";
+}
+
+function createDivNode(className, content) {
+    var e = document.createElement('DIV');
+    e.className = className;
+    e.innerText = content;
+    return e;
+}
+
+function createSpanNode(className, content) {
+    var e = document.createElement('SPAN');
+    e.className = className;
+    e.innerText = content;
+    return e;
 }
