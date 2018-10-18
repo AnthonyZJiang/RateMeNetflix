@@ -40,7 +40,4 @@ function getPlayerEpisode(titleContainerNode) {
 
 if (document.URL.includes('watch')) {
     var rating = getPlayingMovieRating();
-    
-} else {
-    chrome.runtime.sendMessage({action: 'watchContent', content: null})
 }

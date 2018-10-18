@@ -3,8 +3,8 @@
 var _subtitleSettings = {
     fontSize: 0,
     fontColour: '#fff',
-    timeOffset1: 0,
-    timeOffset2: 0,
+    timeOffsetFromTextBox: 0,
+    timeOffsetFromSlider: 0,
     subHeight: 75,
     disabled: true
 }
@@ -162,7 +162,7 @@ function findSubtitleNaively(currentTime, subtitles) {
 }
 
 function getTotalTimeOffsetMs() {
-    return (_subtitleSettings.timeOffset1+_subtitleSettings.timeOffset2) * 1000
+    return (_subtitleSettings.timeOffsetFromTextBox+_subtitleSettings.timeOffsetFromSlider) * 1000
 }
 
 function clearSubtitleSettings(){

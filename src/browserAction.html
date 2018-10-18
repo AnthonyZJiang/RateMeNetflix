@@ -1,472 +1,525 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <style>
-            body {
-                overflow:scroll;
-                min-width: 300px;
-                margin: 0px;
-                padding: 0px;
-                font-size: 12px;
-                background: white;
-                font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
-                -webkit-user-select: none;
-                user-select: none;
-            }
-            a {
-                text-decoration-line: none;
-                color: #d5d5d5;
-                padding-left: 0.5em;
-                padding-right: 0.5em;
-            }
-            a:hover {
-                color: #d5d5d5;
-            }
-            #subtitle-panel a{
-                text-decoration-line: none;
-                color: #545652;
-                padding-left: 0.5em;
-                padding-right: 0.5em;
-            }
-            #subtitle-panel a:hover {
-                color: #545652;
-                text-decoration-line: underline;
-            }
-            div.bd-nav, .footer {
-                color: #d5d5d5;
-                background-color: #545652;
-                width: 100%;
-                height: 28px;
-                line-height: 28px;
-            }
-            .bd-nav-movie, .no-movie {
-                padding-left: 0.5em;
-                padding-right: 0.5em;
-            }
-            .movie-poster {
-                max-height: 200px;
-                margin: 0.5em;
-            }
-            #movie-content {
-                color: #999;
-                line-height: 1.5em;
-            }
-            .movie-title {
-                font-size: 16px;
-                color:#37a;
-                white-space:nowrap;
-            }
-            .movie-rating {
-                color:#e09015;
-            }
-            .movie-rating-num {
-                color:#666666;
-            }
-            #movie-content input[type="button"] {
-                -webkit-appearance: none;
-                padding: 0 22px;
-                height: 30px;
-                font-size: 12px;
-                border: none;
-                border-radius: 2px;
-                cursor: pointer;
-                background: #30A080;
-                color: #fff;
-                width: 89px;
-                box-sizing: content-box;
-            }
-            #movie-content input[type="button"]:hover {
-                background-color: #2a8c70;
-            }    
-            #movie-content-table {
-                display: none;
-            }
-            #movie-content-tabs {
-                margin-left:0.5em;
-                margin-right:0.5em;
-            }
-            /* subtitle panel */
-            #subtitle-panel {
-                display: none;                
-                margin: 0.5em;
-                border: 1px solid #2a8c70;
-                border-radius: 4px;
-            }
-            #subtitle-switch-panel{
-                background-color: #2a8c70;
-                padding: 5px 10px;
-            }
-            /* subtitle switch text */
-            #subtitle-switch-text{
-                margin-right: 1em;
-                color: #fff;
-            }
-            /* subtitle switch */
-            .toggle-switch  {
-                position: absolute;
-                display: inline-block;
-                width: 40px;
-                height: 19px;
-            }
-            .toggle-switch  input {display:none;}
-            .toggle-switch .slider-round {
-                position: absolute;
-                cursor: pointer;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: #fff;
-                -webkit-transition: .4s;
-                transition: .4s;
-                border-radius: 34px;
-                border: 2px solid #2a8c70;
-            }
-            .toggle-switch .slider-round:before {
-                position: absolute;
-                content: "";
-                height: 9px;
-                width: 9px;
-                left: 3px;
-                bottom: 3px;
-                background-color: #2a8c70;
-                -webkit-transition: .4s;
-                transition: .4s;
-                border-radius: 50%;
-            }
-            input:checked + .slider-round {
-                background-color: #98D7BB;
-            }
-            input:focus + .slider-round {
-                box-shadow: 0 0 1px #2196F3;
-            }
-            input:checked + .slider-round:before {
-                -webkit-transform: translateX(21px);
-                transform: translateX(21px);
-                background-color: #fff
-            }
-            #subtitle-collapse{
-                text-align: center;
-            }
-            /* subtitle load button */
-            #subtitle-uploader {
-                width: 0.1px;
-                height: 0.1px;
-                opacity: 0;
-                overflow: hidden;
-                position: absolute;
-                z-index: -1;
-            }
-            #subtitle-uploader + label {
-                margin-left: 1em;
-                margin-right: 1em;
-                margin-top: 1.5em;
-                max-width: 260px;
-                padding: 0.2em 1em;
-                font-size: 1em;
-                font-weight: 400;
-                color: white;
-                background-color: #30A080;
-                display: inline-block;
-                text-align: center;
-                border-radius: 2px;
-                overflow:hidden;
-                text-overflow: ellipsis;
-            }
-            #subtitle-uploader:focus + label,
-            #subtitle-uploader + label:hover {
-                background-color: #2a8c70;
-            }
-            #subtitle-uploader + label {
-                cursor: pointer; /* "hand" cursor */
-            }
-            .subtitle-settings-panel {
-                margin-top:1em;
-                margin-bottom:1em;
-            }
-            .subtitle-settings-panel td {
-                padding-bottom: 0.5em;
-                padding-left:0.5em;
-                padding-top:1em;
-                text-align: left;
-            }
-            .slide-container {
-                width: 90%;
-                margin-left:0.5em;
-                margin-right:0.5em;
-            }
-            .slider {
-                -webkit-appearance: none;
-                width: 100%;
-                height: 8px;
-                border-radius: 5px;
-                background: #d3d3d3;
-                outline: none;
-                opacity: 0.7;
-                -webkit-transition: .2s;
-                transition: opacity .2s;
-            }
-            .slider:hover {
-                opacity: 1;
-            }
-            .slider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                appearance: none;
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                background: #2a8c70;
-                cursor: pointer;
-            }
-            .slider::-moz-range-thumb {
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                background: #2a8c70;
-                cursor: pointer;
-            }
-            #subtitle-adjustment {
-                width: 20%;
-                height: 1.5em;
-            } 
-            
-            /* colour picker */
-            .subtitle-colour-picker {
-                position: relative;
-                cursor: pointer;
-                margin-left: 0.5em;
-                margin-right: 1.5em;
-                -webkit-user-select: none;
-                user-select: none;
-            }
-            .subtitle-colour-picker input {
-                position: absolute;
-                opacity: 0;
-                cursor: pointer;
-            }
-            .checkmark {
-                position: absolute;
-                top: -7px;
-                left: 0px;
-                height: 15px;
-                width: 15px;
-                border-radius: 50%;
-            }
-            .subtitle-colour-picker:hover input:not(:checked) ~ .checkmark {
-                height: 17px;
-                width:17px;
-                top: -8px;
-                left: -1px;
-            }
-            .checkmark:after {
-                content: "";
-                position: absolute;
-                display: none;
-            }
-            .subtitle-colour-picker input:checked ~ .checkmark:after {
-                display: block;
-            }
-            .subtitle-colour-picker .checkmark:after {
-                top: -4px;
-                left: 8px;
-                height: 9px;
-                width: 9px;
-                position: absolute;
-                border-radius: 50%;
-                background: #2a8c70;
-            }      
-            #colour-white .checkmark {                
-                background-color: white;
-                border: 1px solid #d3d3d3;
-            }       
-            #colour-black .checkmark{                
-                background-color: black;
-                border: 1px solid black;
-            }      
-            #colour-yellow .checkmark{                
-                background-color: #ffd700;
-                border: 1px solid #ffd700;
-            }   
-            #colour-blue .checkmark{                
-                background-color: #00bfff;
-                border: 1px solid #00bfff;
-            }   
-            #colour-green .checkmark{                
-                background-color: #52cd32;
-                border: 1px solid #52cd32;
-            }
 
-            /* font size */
-            .subtitle-font-size {
-                margin-left:0.5em;
-                width: 20px;
-                height: 20px;
-                border: none;
-                border-radius: 2px;
-            }
-            .subtitle-font-size svg{
-                position: relative;
-                cursor: pointer;
-                fill: #2a8c70;
-            }
-            .subtitle-font-size:hover svg{
-                fill: #40dbaf;
-            }
-            #subtitle-font-size-plus svg{
-                width:16px;
-                height:16px;
-            }
-            #subtitle-font-size-minus svg{
-                top: 2px;
-                width:13px;
-                height:16px;
-            }
-            #subtitle-font-size-value{
-                margin-left:2em
-            }
-            /* footer */
-            .footer-donation {
-                text-align: right;
-                margin-right: 1em;
-            }
-        </style>
-    </head>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            overflow:scroll;
+            min-width: 300px;
+            margin: 0px;
+            padding: 0px;
+            font-size: 12px;
+            background: white;
+            font-family: -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        a {
+            text-decoration-line: none;
+            color: #d5d5d5;
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+        }
+        a:hover {
+            color: #d5d5d5;
+        }
+        #subtitle-panel a{
+            text-decoration-line: none;
+            color: #545652;
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+        }
+        #subtitle-panel a:hover {
+            color: #545652;
+            text-decoration-line: underline;
+        }
+        div.bd-nav, .footer {
+            color: #d5d5d5;
+            background-color: #545652;
+            width: 100%;
+            line-height: 28px;
+        }
+        .bd-nav-content, .no-movie {
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+        }
+        #db-query {
+            width: 258px;
+            font-size: 12px;
+            height: 20px;
+            margin: 0 0 0 0.5em;
+            padding: 0 5px;
+            color: #545652;
+            border-radius: 2px 0 0 2px;
+            border: none;
+        }
+        #db-query:focus {
+            outline: none;
+        }
+        #db-query::placeholder {
+            color: rgb(196, 196, 196);
+            font-size:11.5px;
+        }
+        /* query button */
+        #db-query-button {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            position: absolute;
+            z-index: -1;
+        }
+        #db-query-button + label {
+            background-color: #999;
+            border-radius: 0 2px 2px 0;
+            cursor: pointer;
+            height: 20px;
+            padding: 1px 1px;
+            margin: 0px;
+            position: relative;
+            left: -4px;
+            top: 5px;                
+        }
+        .movie-poster {
+            max-height: 200px;
+            margin: 0.5em;
+        }
+        #movie-content {
+            color: #999;
+            line-height: 1.5em;
+        }
+        .movie-title {
+            font-size: 16px;
+            color:#37a;
+            white-space:nowrap;
+        }
+        .movie-rating {
+            color:#e09015;
+        }
+        .movie-rating-num {
+            color:#666666;
+        }
+        #movie-content input[type="button"] {
+            -webkit-appearance: none;
+            padding: 0 22px;
+            height: 30px;
+            font-size: 12px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            background: #30A080;
+            color: #fff;
+            width: 89px;
+            box-sizing: content-box;
+        }
+        #movie-content input[type="button"]:hover {
+            background-color: #2a8c70;
+        }    
+        #movie-content-table {
+            display: none;
+        }
+        #movie-content-tabs {
+            margin-left:0.5em;
+            margin-right:0.5em;
+        }
+        /* subtitle panel */
+        #subtitle-panel {
+            display: none;                
+            margin: 0.5em;
+            border: 1px solid #2a8c70;
+            border-radius: 4px;
+        }
+        #subtitle-switch-panel{
+            background-color: #2a8c70;
+            padding: 5px 10px;
+        }
+        /* subtitle switch text */
+        #subtitle-switch-text{
+            margin-right: 1em;
+            color: #fff;
+        }
+        /* subtitle switch */
+        .toggle-switch  {
+            position: absolute;
+            display: inline-block;
+            width: 40px;
+            height: 19px;
+        }
+        .toggle-switch  input {display:none;}
+        .toggle-switch .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #fff;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+            border: 2px solid #2a8c70;
+        }
+        .toggle-switch .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 9px;
+            width: 9px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #2a8c70;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider-round {
+            background-color: #98D7BB;
+        }
+        input:focus + .slider-round {
+            box-shadow: 0 0 1px #2196F3;
+        }
+        input:checked + .slider-round:before {
+            -webkit-transform: translateX(21px);
+            transform: translateX(21px);
+            background-color: #fff
+        }
+        #subtitle-collapse{
+            text-align: center;
+        }
+        /* subtitle load button */
+        #subtitle-uploader {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+        #subtitle-uploader + label {
+            margin-left: 1em;
+            margin-right: 1em;
+            margin-top: 1.5em;
+            max-width: 260px;
+            padding: 0.2em 1em;
+            font-size: 1em;
+            font-weight: 400;
+            color: white;
+            background-color: #30A080;
+            display: inline-block;
+            text-align: center;
+            border-radius: 2px;
+            overflow:hidden;
+            text-overflow: ellipsis;
+            cursor: pointer; /* "hand" cursor */
+        }
+        #subtitle-uploader:focus + label,
+        #subtitle-uploader + label:hover {
+            background-color: #2a8c70;
+        }
+        .subtitle-settings-panel {
+            margin-top:1em;
+            margin-bottom:1em;
+        }
+        .subtitle-settings-panel td {
+            padding-bottom: 0.5em;
+            padding-left:0.5em;
+            padding-top:1em;
+            text-align: left;
+        }
+        .slide-container {
+            width: 90%;
+            margin-left:0.5em;
+            margin-right:0.5em;
+        }
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+        .slider:hover {
+            opacity: 1;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #2a8c70;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #2a8c70;
+            cursor: pointer;
+        }
+        #subtitle-adjustment {
+            width: 20%;
+            height: 1.5em;
+        } 
+        
+        /* colour picker */
+        .subtitle-colour-picker {
+            position: relative;
+            cursor: pointer;
+            margin-left: 0.5em;
+            margin-right: 1.5em;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .subtitle-colour-picker input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .checkmark {
+            position: absolute;
+            top: -7px;
+            left: 0px;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+        }
+        .subtitle-colour-picker:hover input:not(:checked) ~ .checkmark {
+            height: 17px;
+            width:17px;
+            top: -8px;
+            left: -1px;
+        }
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .subtitle-colour-picker input:checked ~ .checkmark:after {
+            display: block;
+        }
+        .subtitle-colour-picker .checkmark:after {
+            top: -4px;
+            left: 8px;
+            height: 9px;
+            width: 9px;
+            position: absolute;
+            border-radius: 50%;
+            background: #2a8c70;
+        }      
+        #colour-white .checkmark {                
+            background-color: white;
+            border: 1px solid #d3d3d3;
+        }       
+        #colour-black .checkmark{                
+            background-color: black;
+            border: 1px solid black;
+        }      
+        #colour-yellow .checkmark{                
+            background-color: #ffd700;
+            border: 1px solid #ffd700;
+        }   
+        #colour-blue .checkmark{                
+            background-color: #00bfff;
+            border: 1px solid #00bfff;
+        }   
+        #colour-green .checkmark{                
+            background-color: #52cd32;
+            border: 1px solid #52cd32;
+        }
 
-    <body>
-        <div class="bd-nav">           
-            <div class="bd-nav-movie">
-                <a href="https://movie.douban.com/">豆瓣电影</a>
-                <a href="https://www.netflix.com/browse">Netflix</a>
-            </div>
+        /* font size */
+        .subtitle-font-size {
+            margin-left:0.5em;
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 2px;
+        }
+        .subtitle-font-size svg{
+            position: relative;
+            cursor: pointer;
+            fill: #2a8c70;
+        }
+        .subtitle-font-size:hover svg{
+            fill: #40dbaf;
+        }
+        #subtitle-font-size-plus svg{
+            width:16px;
+            height:16px;
+        }
+        #subtitle-font-size-minus svg{
+            top: 2px;
+            width:13px;
+            height:16px;
+        }
+        #subtitle-font-size-value{
+            margin-left:2em
+        }
+        /* footer */
+        .footer-donation {
+            text-align: right;
+            margin-right: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bd-nav">
+        <div class="bd-nav-content">
+            <a href="https://movie.douban.com/">豆瓣电影</a>
+            <a href="https://www.netflix.com/browse">Netflix</a>
         </div>
-        <div id="movie-content">
-            <!-- <div class="no-movie">
+        <div class="bd-nav-content" id="db-query-wrapper">
+            <input id="db-query" placeholder="豆瓣搜索">
+            <input id="db-query-button" type="button" />
+            <label for="db-query-button">
+                <svg style="vertical-align: top" version="1.0" xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 1280.000000 1280.000000"
+                    preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)" fill="#ffffff" stroke="none">
+                        <path d="M4470 11700 c-1261 -110 -2368 -843 -2959 -1961 -414 -785 -529 -1723 -315 -2584 237 -951 844 -1771 1688 -2278 1121 -673 2523 -695 3659 -59 119 67 333 204 402 258 l30 24 1965 -1964 c1529 -1528 1977 -1970 2020 -1994 199 -110 430 -72 600 98 169 169 208 403 98 599 -24 44 -466 492 -1994 2021 l-1964 1965 24 30 c54 69 189 279 257 400 427 762 564 1652 388 2517 -115 570 -355 1077 -740 1567 -103 131 -411 441 -539 543 -570 452 -1194 718 -1890 803 -150 19 -583 27 -730 15z m592 -925 c953 -101 1780 -684 2192 -1545 115 -241 187 -467 231 -725 135 -793 -71 -1588 -574 -2212 -96 -120 -295 -318 -414 -413 -412 -329 -897 -529 -1432 -591 -137 -16 -456 -16 -595 0 -529 60 -1024 266 -1440 597 -109 87 -327 305 -414 414 -311 390 -508 848 -583 1355 -25 171 -25 593 0 755 51 330 131 585 269 862 323 647 891 1142 1573 1372 193 66 426 116 620 135 145 14 419 12 567 -4z" />
+                    </g>
+                </svg>
+            </label>
+        </div>
+    </div>
+    <div id="movie-content">
+        <!-- <div class="no-movie">
                 <p>没有播放任何电影</p>
             </div> -->
-            <table id="movie-content-table">
-                <tr >
-                    <td id="td-movie-poster" rowspan="4"></td>
-                    <td id="td-movie-title"></td>
-                </tr>
-                <tr>
-                    <td id="td-movie-rating"> </td>
-                </tr>
-                <tr>
-                    <td id="td-movie-meta"></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div id="td-movie-link"></div>
-                    </td>
-                </tr>
-            </table>
+        <table id="movie-content-table">
+            <tr>
+                <td id="td-movie-poster" rowspan="4"></td>
+                <td id="td-movie-title"></td>
+            </tr>
+            <tr>
+                <td id="td-movie-rating"> </td>
+            </tr>
+            <tr>
+                <td id="td-movie-meta"></td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="td-movie-link"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="subtitle-panel">
+        <div id="subtitle-switch-panel">
+            <span id="subtitle-switch-text">字幕</span>
+            <label class="toggle-switch">
+                <input type="checkbox" data-toggle="collapse" data-target="#subtitle-collapse" id="subtitle-switch">
+                <span class="slider-round"></span>
+            </label>
         </div>
-        <div id="subtitle-panel">
-            <div id="subtitle-switch-panel">
-                <span id="subtitle-switch-text">字幕</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" data-toggle="collapse" data-target="#subtitle-collapse" id="subtitle-switch">
-                    <span class="slider-round"></span>
-                </label>
+        <div id="subtitle-collapse" class="collapse" collapse="false">
+            <input id="subtitle-uploader" type="file" />
+            <label for="subtitle-uploader">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="12" viewBox="0 0 20 17">
+                    <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path>
+                </svg>
+                <span>选择字幕</span>
+            </label>
+            <div>
+                <a id="subtitle-subhd-link" href="http://subhd.com/search0/(dsfe)" target="_blank">去SubHD搜索</a>
             </div>
-            <div id="subtitle-collapse" class="collapse" collapse="false">
-                <input id="subtitle-uploader" type="file"/>
-                <label for="subtitle-uploader">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="12" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path></svg>
-                    <span>选择字幕</span>
-                </label>
-                <div>
-                    <a id="subtitle-subhd-link" href="http://subhd.com/search0/(dsfe)" target="_blank">去SubHD搜索</a>
-                </div>
-                <div class="subtitle-settings-panel" id="subtitle-settings-panel">
-                    <table id="movie-content-tabs">
-                        <tr >
-                            <td width="68">时间微调：</td>
-                            <td>
-                                <div class="slide-container">
-                                    <input type="range" min="-1000" max="1000" value="0" class="slider" id="subtitle-micro-adjustment-slider">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>时间调整：</td>
-                            <td>
-                                <div class="slide-container">
-                                    <input type="text" id="subtitle-adjustment">
-                                    <span>秒</span>
-                                    <span id="subtitle-micro-adjustment-val">，总计提前 00.00 秒</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>字幕位置：</td>
-                            <td>
-                                <div class="slide-container">
-                                    <input type="range" min="-80" max="0" value="-5" class="slider" id="subtitle-height-slider">
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>字幕颜色:</td>
-                            <td>
-                                <label class="subtitle-colour-picker" id="colour-white">
-                                    <input type="radio" name="colour-picker-radio" colourname="#fff" id="colour-white-radio">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label class="subtitle-colour-picker" id="colour-black">
-                                    <input type="radio" name="colour-picker-radio" colourname="#000" id="colour-black-radio">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label class="subtitle-colour-picker" id="colour-yellow">
-                                    <input type="radio" name="colour-picker-radio" colourname="#ffd700" id="colour-yellow-radio">
-                                    <span class="checkmark"></span>
-                                </label>
-                                    <label class="subtitle-colour-picker" id="colour-green">
-                                    <input type="radio" name="colour-picker-radio" colourname="#52cd32" id="colour-green-radio">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label class="subtitle-colour-picker" id="colour-blue">
-                                    <input type="radio" name="colour-picker-radio" colourname="#00bfff" id="colour-blue-radio">
-                                    <span class="checkmark"></span>
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>字幕大小:</td>
-                            <td>
-                                <span id="subtitle-font-size-plus" class="subtitle-font-size">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63.86 42.95">
-                                        <path d="M43.1,53.37H33.66l-3.75-9.76H12.74L9.2,53.37H0L16.73,10.42H25.9Zm-16-17L21.21,20.44l-5.8,15.94Z"/>
-                                        <path d="M52.59,39.79v-6.7H45.84V28.47h6.75v-6.7h4.5v6.7h6.77v4.62H57.09v6.7Z" transform="translate(0 -5)"/>
-                                    </svg>                                    
-                                </span>
-                                <span id="subtitle-font-size-minus" class="subtitle-font-size">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63.86 42.95">
-                                        <path d="M43.1,53.37H33.66l-3.75-9.76H12.74L9.2,53.37H0L16.73,10.42H25.9Zm-16-17L21.21,20.44l-5.8,15.94Z"/>
-                                        <path d="M57.09,28.47h6.77v4.62h-18V28.47h6.75" transform="translate(-1.2 -6)"/>
-                                    </svg>
-                                </span>
-                                <span id="subtitle-font-size-value">40px</span>
-                            </td>
-                        </tr>
-                    </table>                    
-                </div>            
-            </div>
-        </div>
-        <div class="footer">
-            <div class="footer-donation">
-                <img src="img/mug-icon.png">
-                <a href="https://www.paypal.me/AnthonyzyJ/2">
-                    如果你喜欢这个扩展，能否给我买杯茶呢？ :)
-                </a>
+            <div class="subtitle-settings-panel" id="subtitle-settings-panel">
+                <table id="movie-content-tabs">
+                    <tr>
+                        <td width="68">时间微调：</td>
+                        <td>
+                            <div class="slide-container">
+                                <input type="range" min="-1000" max="1000" value="0" class="slider" id="subtitle-micro-adjustment-slider">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>时间调整：</td>
+                        <td>
+                            <div class="slide-container">
+                                <input type="text" id="subtitle-adjustment">
+                                <span>秒</span>
+                                <span id="subtitle-micro-adjustment-val">，总计提前 00.00 秒</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>字幕位置：</td>
+                        <td>
+                            <div class="slide-container">
+                                <input type="range" min="-80" max="0" value="-5" class="slider" id="subtitle-height-slider">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>字幕颜色:</td>
+                        <td>
+                            <label class="subtitle-colour-picker" id="colour-white">
+                                <input type="radio" name="colour-picker-radio" colourname="#fff" id="colour-white-radio" checked="checked">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="subtitle-colour-picker" id="colour-black">
+                                <input type="radio" name="colour-picker-radio" colourname="#000" id="colour-black-radio">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="subtitle-colour-picker" id="colour-yellow">
+                                <input type="radio" name="colour-picker-radio" colourname="#ffd700" id="colour-yellow-radio">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="subtitle-colour-picker" id="colour-green">
+                                <input type="radio" name="colour-picker-radio" colourname="#52cd32" id="colour-green-radio">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="subtitle-colour-picker" id="colour-blue">
+                                <input type="radio" name="colour-picker-radio" colourname="#00bfff" id="colour-blue-radio">
+                                <span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>字幕大小:</td>
+                        <td>
+                            <span id="subtitle-font-size-plus" class="subtitle-font-size">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63.86 42.95">
+                                    <path d="M43.1,53.37H33.66l-3.75-9.76H12.74L9.2,53.37H0L16.73,10.42H25.9Zm-16-17L21.21,20.44l-5.8,15.94Z" />
+                                    <path d="M52.59,39.79v-6.7H45.84V28.47h6.75v-6.7h4.5v6.7h6.77v4.62H57.09v6.7Z"
+                                        transform="translate(0 -5)" />
+                                </svg>
+                            </span>
+                            <span id="subtitle-font-size-minus" class="subtitle-font-size">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63.86 42.95">
+                                    <path d="M43.1,53.37H33.66l-3.75-9.76H12.74L9.2,53.37H0L16.73,10.42H25.9Zm-16-17L21.21,20.44l-5.8,15.94Z" />
+                                    <path d="M57.09,28.47h6.77v4.62h-18V28.47h6.75" transform="translate(-1.2 -6)" />
+                                </svg>
+                            </span>
+                            <span id="subtitle-font-size-value">40px</span>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
-        <script src="js/external/jquery-3.1.1.min.js"></script>
-        <script src="js/external/bootstrap.min.js"></script>
-        <script src="js/action/browserAction.js"></script>
-        <script src="js/action/subtitleAdjustments.js"></script>
-        <!-- <iframe src="https://m.douban.com/movie/subject/6390825" sandbox="allow-scripts allow-same-origin" width="768px" height="1024px"></iframe> -->
-    </body>
+    </div>
+    <div class="footer">
+        <div class="footer-donation">
+            <img src="img/mug-icon.png">
+            <a href="https://www.paypal.me/AnthonyzyJ/2">
+                如果你喜欢这个扩展，能否给我买杯茶呢？ :)
+            </a>
+        </div>
+    </div>
+    <script src="js/external/jquery-3.1.1.min.js"></script>
+    <script src="js/external/bootstrap.min.js"></script>
+    <script src="js/console.js"></script>
+    <script src="js/action/addQueryResultContent.js"></script>
+    <script src="js/action/subtitleNodes.js"></script>
+    <script src="js/action/subtitleNodesEvents.js"></script>
+    <script src="js/action/browserAction.js"></script>
+    <!-- <iframe src="https://m.douban.com/movie/subject/6390825" sandbox="allow-scripts allow-same-origin" width="768px" height="1024px"></iframe> -->
+</body>
+
 </html>

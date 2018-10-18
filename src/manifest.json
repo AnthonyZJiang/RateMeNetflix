@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Netflix豆瓣电影助手",
   "short_name": "Netflix-豆瓣",
-  "version": "3.0",
+  "version": "3.1",
   "icons": { 
     "16": "img/logo@1x.png",
     "24": "img/logo@1.5x.png",
@@ -15,12 +15,13 @@
       "js/background/background.js",   
       "js/background/rating/rating.js",  
       "js/background/rating/douban.js",
-      "js/background/subtitleParser.js"
+      "js/background/subtitleParser.js",
+      "js/console.js"
     ]
   },
 
   "browser_action": {
-    "default_title": "Just play",
+    "default_title": "Netflix豆瓣电影助手",
     "default_popup": "browserAction.html"
   },
   
@@ -34,7 +35,8 @@
         "js/injectRating.js",  
         "js/listContents.js",  
         "js/playerContents.js", 
-        "js/injectSubtitle.js"],
+        "js/injectSubtitle.js",
+        "js/console.js"],
       "css": ["listContents.css"]
     }
   ],
