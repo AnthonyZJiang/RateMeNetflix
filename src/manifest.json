@@ -18,7 +18,10 @@
       "js/background/rating/rating.js",  
       "js/background/rating/douban.js",
       "js/background/subtitleParser.js",
-      "js/console.js"
+      "js/console.js",
+      "js/Exception.js",
+      "js/action/zimukuSubtitle.js",
+      "js/action/zimukuSubtitleFinder.js"
     ]
   },
 
@@ -46,7 +49,9 @@
   "permissions": ["activeTab", "tabs",
     "https://movie.douban.com/*", 
     "https://*.netflix.com/*",
-    "https://api.douban.com/v2/movie*"],
+    "https://api.douban.com/v2/movie*",
+    "http://*.zimuzu.tv/*",
+    "https://*.zumuku.cn/*"],
 
     "web_accessible_resources": [
       "img/doubanLogo16x16.png",
