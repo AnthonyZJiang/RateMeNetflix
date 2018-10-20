@@ -29,7 +29,7 @@ function addMovieContent(movieObject) {
     addMovieRatingAndRatingNumber(dbr.rating, dbr.ratingNum);
     addMovieGenres(dbr.genres);
     addGoToMoviePageButton(dbr.url);
-    addSubHdUrl(getSubHdUrl(dbr.oriTitle, dbr.year));
+    addSubQueryUrl(getSubQueryUrl(dbr.oriTitle, dbr.year));
     unHideMovieContentTableElement();
     unHideSubtitleElement();
     hideDoubanQueryNode();
@@ -81,12 +81,16 @@ function createGoToMoviePageButtonElement(url) {
     return e;
 }
 
-function addSubHdUrl(url) {
-    document.getElementById('subtitle-subhd-link').href = url;
+function addSubQueryUrl(url) {
+    document.getElementById('subtitle-subquery-link').href = url;
 }
 
-function getSubHdUrl(title, year) {
-    return "http://subhd.com/search0/" + title.replace(/[!"%$£^&*()@\':;#~,.?><|\\//]+/g, ' ') + '%20' + year
+function getSubQueryUrl(title, year) {
+    return "https://www.zimuku.cn/search?q=" + getSubQueryText(title, year);
+}
+
+function getSubQueryText(title, year) {
+    return title.replace(/[^\w\d]/g, '+') + '+' + year;
 }
 
 function unHideMovieContentTableElement() {
