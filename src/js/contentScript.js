@@ -18,3 +18,19 @@ function getRatings(id, title, episodeInfo, year, callback) {
         }
     }, callback);
 }
+
+chrome.runtime.onMessage.addListener(
+    function(request) {
+        // get watched status douban
+        if (request.action == 'pauseVideo') {
+            pauseVideo();
+        }
+    }
+)
+
+function pauseVideo() {
+    var video = document.getElementsByTagName("video");
+    if (video) {
+        video.pause();
+    }
+}
