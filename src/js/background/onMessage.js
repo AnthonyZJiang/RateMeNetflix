@@ -27,10 +27,6 @@ chrome.runtime.onMessage.addListener(
             case 'updateSubSettings':
                 _subtitleSettings = request.content;
                 return;
-            case 'zimukuIframeLoaded':
-                return onZimukuIframeLoaded(sendResponse);
-            case 'createZimukuIframe':
-                return onCreateZimukuIframe(request);
         }
         console.log('(background.js) Unhandled message received: ', request)
     }
