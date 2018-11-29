@@ -15,7 +15,7 @@ function getRatings(id, title, episodeInfo, year, callback) {
             title: title,
             episodeInfo: episodeInfo,
             year: year
-        }
+        },
     }, callback);
 }
 

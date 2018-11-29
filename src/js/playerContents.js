@@ -9,18 +9,19 @@ function getPlayingMovieRating() {
 }
 
 function sendRatingToPopUp(rating) {
-    if (rating && rating.doubanRating.rating > 0 && !rating.queryInProgress) {
+    if (rating && rating.doubanRating.rating >= 0 && !rating.queryInProgress) {
         //rating ready
         console.log(rating);
         chrome.runtime.sendMessage({
             action:'playingMovieInfo',
-            content: rating
+            content: rating,
+            updatePlayerTabId: true
         })
     }
 }
 
 function getPlayerMovieId() {
-    return document.querySelector('.VideoContainer').firstChild.id;
+    return document.querySelector('.VideoContainer>div').id;
 }
 
 function getPlayerMovieTitle(titleContainerNode) {

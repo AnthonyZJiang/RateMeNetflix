@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Netflix豆瓣电影助手",
   "short_name": "Netflix-豆瓣",
-  "version": "3.1",
+  "version": "3.1.1",
   
   "description": "连接豆瓣电影和Netflix的桥梁。",
   "icons": { 
@@ -14,14 +14,15 @@
 
   "background": {
     "scripts":[
+      "js/background/onMessage.js", 
       "js/background/background.js",   
       "js/background/rating/rating.js",  
       "js/background/rating/douban.js",
       "js/background/subtitleParser.js",
       "js/console.js",
       "js/Exception.js",
-      "js/action/zimukuSubtitle.js",
-      "js/action/zimukuSubtitleFinder.js"
+      "js/zimuku/zimukuIframe.js",
+      "test/netflix.js"
     ]
   },
 
@@ -32,7 +33,7 @@
   
   "content_scripts": [
     {
-      "matches": ["https://*.netflix.com/*"],
+      "matches": ["https://*.netflix.com/*","file:///*.netflix.com/*"],
       "js": [
         "js/external/jquery-3.1.1.min.js",
         "js/contentScript.js",
@@ -43,15 +44,23 @@
         "js/injectSubtitle.js",
         "js/console.js"],
       "css": ["listContents.css"]
+    },
+    {
+      "matches": ["https://*.zimuku.cn/*"],
+      "js": [
+        "js/exception.js",
+        "js/xhr.js",
+        "js/zimuku/zimukuIframeContent.js"
+        ],
+      "all_frames": true
     }
   ],
   
-  "permissions": ["activeTab", "tabs",
+  "permissions": ["activeTab", "tabs", "downloads",
     "https://movie.douban.com/*", 
     "https://*.netflix.com/*",
     "https://api.douban.com/v2/movie*",
-    "http://*.zimuzu.tv/*",
-    "https://*.zumuku.cn/*"],
+    "https://*.zimuku.cn/*"],
 
     "web_accessible_resources": [
       "img/doubanLogo16x16.png",

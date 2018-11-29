@@ -418,7 +418,7 @@
             </label>
         </div>
         <div id="subtitle-collapse" class="collapse" collapse="false">
-            <input id="subtitle-uploader" type="file" />
+            <input accept=".srt" id="subtitle-uploader" type="file" />
             <label for="subtitle-uploader">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="12" viewBox="0 0 20 17">
                     <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"></path>
@@ -516,13 +516,14 @@
     <script src="js/external/bootstrap.min.js"></script>
     <script src="js/console.js"></script>
     <script src="js/Exception.js"></script>
-    <script src="js/action/zimukuSubtitle.js"></script>
-    <script src="js/action/zimukuSubtitleFinder.js"></script>
+    <script src="js/xhr.js"></script>
+    <script src="js/zimuku/zimukuSubtitle.js"></script>
+    <script src="js/zimuku/zimukuSubtitleFinder.js"></script>
     <script src="js/action/addQueryResultContent.js"></script>
     <script src="js/action/subtitleNodes.js"></script>
     <script src="js/action/subtitleNodesEvents.js"></script>
     <script src="js/action/browserAction.js"></script>
-    <!-- <iframe src="https://m.douban.com/movie/subject/6390825" sandbox="allow-scripts allow-same-origin" width="768px" height="1024px"></iframe> -->
+    <script src="test/action.js"></script>
 </body>
 
 </html>

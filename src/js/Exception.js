@@ -1,13 +1,12 @@
 class SourceInnerExceptionAddedError extends Error {
-    constructor (source, innerException, message) {
+    constructor (innerException, message) {
         super(message);
-        this.source = source;
         this.innerException = innerException;
     }
 }
 
 class FetchFailedException extends SourceInnerExceptionAddedError {
-    constructor (source, innerException, message) {
+    constructor (innerException, message) {
         if (!message) {
             message = 'Fetch failed.';
         }
@@ -16,7 +15,7 @@ class FetchFailedException extends SourceInnerExceptionAddedError {
 }
 
 class FetchResponseAnomalousException extends SourceInnerExceptionAddedError {
-    constructor (source, message) {
+    constructor (message) {
         if (!message) {
             message = 'Fetch response is anomalous.';
         }
@@ -25,7 +24,7 @@ class FetchResponseAnomalousException extends SourceInnerExceptionAddedError {
 }
 
 class InvalidOperationException extends SourceInnerExceptionAddedError {
-    constructor (source, message) {
+    constructor (message) {
         if (!message) {
             message = 'The operation is invalid.';
         }

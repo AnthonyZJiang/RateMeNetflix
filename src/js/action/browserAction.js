@@ -1,5 +1,8 @@
 'use strict'
 
+var _corsApi = 'https://corsanthony.herokuapp.com/';
+var _currentMovieObject = null;
+
 window.addEventListener('click', function (e) {
     if (e.target.href !== undefined) {
         if (isPauseVideoRequired(e.target)) {
@@ -34,6 +37,7 @@ chrome.runtime.onMessage.addListener(
             // if content is null - not on watch page
             // else check queryStatus
             if (!request.content.queryInProgress) {
+                _currentMovieObject = request.content;
                 addQueryResultToDocument(request.content);
                 sendGetLoadedSubtitleInfo(request.content.id);
             }

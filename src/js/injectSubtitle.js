@@ -77,7 +77,7 @@ function waitForVideoElement(subtitles) {
         function onTimeUpdate() {        
             if (!_subtitleSettings.disabled) {
                 var subsContainer = document.querySelector(".dbnf-subs-container");                    
-                renderSubtitles(subsContainer, video.currentTime*1000, subtitles);
+                renderSubtitles(subsContainer, getVideoOffsetTime(video), subtitles);
             }
         }
 
@@ -86,6 +86,14 @@ function waitForVideoElement(subtitles) {
             waitForVideoElement(subtitles);
         }, 100);
     }
+}
+
+function getVideoTime(video) {
+    return video.currentTime*1000;
+}
+
+function getVideoOffsetTime(video) {
+    return getVideoTime(video) - parseInt(getTotalTimeOffsetMs(), 10);
 }
 
 function appendSubtitlesContainer(video) {
@@ -117,12 +125,12 @@ function alwaysCheckThatSubtitlesContainerIsAppended() {
     }
 }
 
-function renderSubtitles(subsContainer, currentTime, subtitles) {          
-    var result = findSubtitleNaively(currentTime, subtitles);
+function renderSubtitles(subsContainer, offsetVideoTime, subtitles) {          
+    var result = findSubtitleNaively(offsetVideoTime, subtitles);
     //console.log('result returned --> currentIdx:',_currentIdx, ';offset:',_subtitleSettings.timeOffset, ';result:', result);
     //console.log()
     if (result !== null && result.id !== _currentIdx) { 
-        console.log('%cSub added -->', 'color: white; background: black', 't:', currentTime, result.subtitle); 
+        console.log('%cSub added -->', 'color: white; background: black', 't:', offsetVideoTime, result.subtitle); 
         _currentIdx = result.id;     
         var texts = result.subtitle.text.split('\n');
         var textToDisplay ='';
@@ -130,7 +138,7 @@ function renderSubtitles(subsContainer, currentTime, subtitles) {
             textToDisplay += t + "<br>";
         }) 
         subsContainer.innerHTML = "<b>" + textToDisplay + "</b>";
-        clearSubtitle(subsContainer, result.subtitle.endTime - currentTime, textToDisplay);
+        clearSubtitle(subsContainer, result.subtitle.endTime - offsetVideoTime, textToDisplay);
     }
 }
 
@@ -148,12 +156,11 @@ function clearSubtitle(subsContainer, ms, text) {
     }, ms);
 }
 
-function findSubtitleNaively(currentTime, subtitles) {
+function findSubtitleNaively(offsetVideoTime, subtitles) {
     for (var idx = 0; idx < subtitles.length; idx++) {
-        var text = subtitles[idx].text;
-        var start = subtitles[idx].startTime + parseInt(getTotalTimeOffsetMs(), 10);
-        var end = subtitles[idx].endTime + parseInt(getTotalTimeOffsetMs(), 10);
-        if (currentTime >= start && currentTime <= end) {
+        var start = subtitles[idx].startTime;
+        var end = subtitles[idx].endTime;
+        if (offsetVideoTime >= start && offsetVideoTime <= end) {
             return {subtitle: subtitles[idx], id: idx};
         }
     }
@@ -168,24 +175,6 @@ function getTotalTimeOffsetMs() {
 function clearSubtitleSettings(){
     chrome.runtime.sendMessage({action:'clearSubtitle'});
 }
-
-// class setTimeoutExtended {
-//     constructor(callback, delay) {
-//         var timerId, start, remaining = delay;
-//         this.pause = function () {
-//             console.log('timeout paused', remaining)
-//             window.clearTimeout(timerId);
-//             remaining -= new Date() - start;
-//         };
-//         this.resume = function () {
-//             console.log('timeout started', remaining)
-//             start = new Date();
-//             window.clearTimeout(timerId);
-//             timerId = window.setTimeout(callback, remaining);
-//         };
-//         this.resume();
-//     }
-// }
 
 function setTimeoutExtended(callback, delay) {
     var timerId, start, remaining = delay;
