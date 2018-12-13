@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Netflix豆瓣电影助手",
   "short_name": "Netflix-豆瓣",
-  "version": "3.1.2",
+  "version": "3.1.3",
   
   "description": "帮助你快速获取Netflix电影的豆瓣评分；一键搜索和加载SRT格式字幕。",
   "icons": { 

@@ -23,3 +23,8 @@ function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
+chrome.tabs.onUpdated.addListener(function(_tabId, changeInfo, _tab) {
+	if (/netflix\.com/.test(changeInfo.url)) {
+		chrome.tabs.executeScript(null, { file: "js/listContents.js" });
+	}
+});
