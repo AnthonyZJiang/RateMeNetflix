@@ -46,7 +46,8 @@
   "permissions": ["activeTab", "tabs",
     "https://movie.douban.com/*", 
     "https://*.netflix.com/*",
-    "https://api.douban.com/v2/movie*"],
+    "https://api.douban.com/v2/movie*",
+    "https://goodmovies.io/*"],
 
     "web_accessible_resources": [
       "img/doubanLogo16x16.png",
